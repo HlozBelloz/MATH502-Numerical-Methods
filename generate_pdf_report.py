@@ -78,7 +78,11 @@ def build_pdf():
         leftMargin=54,
         rightMargin=54,
         topMargin=48,
-        bottomMargin=48
+        bottomMargin=48,
+        title="MATH502 Assignment 1 Report",
+        author="Mazen Altelbany",
+        subject="MATH502 Numerical Methods",
+        creator="MATLAB R2026a"
     )
     
     styles = getSampleStyleSheet()
@@ -206,12 +210,12 @@ def build_pdf():
     
     story.append(Paragraph("MATH502: NUMERICAL METHODS", ParagraphStyle('CourseCode', parent=cover_subtitle_style, fontName='Arial-Bold', fontSize=11.5, leading=14.5, textColor=c_secondary)))
     story.append(Spacer(1, 8))
-    story.append(Paragraph("ASSIGNMENT 1 COMPREHENSIVE REPORT", cover_title_style))
+    story.append(Paragraph("ASSIGNMENT 1 REPORT", cover_title_style))
     story.append(Spacer(1, 6))
     story.append(Paragraph("Non-Linear Systems, Polynomial Interpolation, Diode Circuit Root-Finding,<br/>and Satellite Constellation Wireless Energy Harvesting", cover_subtitle_style))
-    story.append(Spacer(1, 18))
+    story.append(Spacer(1, 16))
     
-    story.append(HRFlowable(width="100%", thickness=1, color=c_border, spaceBefore=4, spaceAfter=22))
+    story.append(HRFlowable(width="100%", thickness=1, color=c_border, spaceBefore=2, spaceAfter=18))
     
     info_data = [
         [Paragraph("<b>Course Instructor:</b>", body_style), Paragraph("Dr. Mohammad Shehab", body_style)],
@@ -226,29 +230,39 @@ def build_pdf():
         ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#f8fafc')),
         ('BOX', (0,0), (-1,-1), 1, c_primary),
         ('INNERGRID', (0,0), (-1,-1), 0.5, c_border),
-        ('TOPPADDING', (0,0), (-1,-1), 5.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 5.5),
+        ('TOPPADDING', (0,0), (-1,-1), 5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 5),
         ('LEFTPADDING', (0,0), (-1,-1), 10),
         ('RIGHTPADDING', (0,0), (-1,-1), 10),
     ]))
     story.append(info_table)
     
-    story.append(Spacer(1, 25))
+    story.append(Spacer(1, 16))
     
-    deliv_content = """
-    <b>Assignment Deliverables & Requirements Checklist:</b><br/>
-    • <b>Deliverable 1:</b> Formal Cover Page listing course details, instructor, TA, and student group identities.<br/>
-    • <b>Deliverable 2:</b> Single programming language justification (MATLAB) presented in Section 1.<br/>
-    • <b>Deliverable 3:</b> Full analytical derivations, pen-and-paper iterations, complete MATLAB codes, output tables, physical discrepancy discussions, and publication-quality figures for all six problems.<br/>
-    • <b>Deliverable 4:</b> Self-contained submission folder containing executable .m scripts ready for submission package link.
-    """
-    deliv_table = Table([[Paragraph(deliv_content, callout_style)]], colWidths=[504])
-    deliv_table.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#eff6ff')),
-        ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#3b82f6')),
-        ('PADDING', (0,0), (-1,-1), 7),
+    story.append(Paragraph("<b>Table of Contents / Report Outline:</b>", h3_style))
+    story.append(Spacer(1, 4))
+    
+    toc_data = [
+        [Paragraph("<b>Section</b>", table_hdr_style), Paragraph("<b>Title & Topic</b>", table_hdr_style), Paragraph("<b>Page</b>", table_hdr_style)],
+        [Paragraph("Section 1", table_cell_style), Paragraph("Programming Language Selection & Justification (MATLAB)", table_cell_style), Paragraph("2", table_cell_style)],
+        [Paragraph("Section 2", table_cell_style), Paragraph("Problem 1: LORAN-C Hyperbolic Positioning System", table_cell_style), Paragraph("2", table_cell_style)],
+        [Paragraph("Section 3", table_cell_style), Paragraph("Problem 2: Wireless Sensor Network (WSN) RSSI Interpolation", table_cell_style), Paragraph("4", table_cell_style)],
+        [Paragraph("Section 4", table_cell_style), Paragraph("Problem 3: Diode DC Circuit Non-Linear Analysis (Bisection & Secant)", table_cell_style), Paragraph("6", table_cell_style)],
+        [Paragraph("Section 5", table_cell_style), Paragraph("Problem 4: Diode DC Circuit Analysis (Newton-Raphson Method)", table_cell_style), Paragraph("7", table_cell_style)],
+        [Paragraph("Section 6", table_cell_style), Paragraph("Problem 5: Packet Latency Vandermonde Interpolation & Extrapolation Analysis", table_cell_style), Paragraph("8", table_cell_style)],
+        [Paragraph("Section 7", table_cell_style), Paragraph("Problem 6: Satellite to Ground Wireless Energy Harvesting", table_cell_style), Paragraph("9", table_cell_style)],
+    ]
+    toc_table = Table(toc_data, colWidths=[65, 399, 40])
+    toc_table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), c_primary),
+        ('GRID', (0,0), (-1,-1), 0.5, c_border),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, c_bg_light]),
+        ('TOPPADDING', (0,0), (-1,-1), 3),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+        ('ALIGN', (0,0), (0,-1), 'CENTER'),
+        ('ALIGN', (2,0), (2,-1), 'CENTER'),
     ]))
-    story.append(deliv_table)
+    story.append(toc_table)
     
     story.append(PageBreak())
     
@@ -259,13 +273,13 @@ def build_pdf():
     story.append(HRFlowable(width="100%", thickness=1, color=c_primary, spaceBefore=1, spaceAfter=4))
     
     lang_just_text = """
-    In accordance with Deliverable 2, <b>MATLAB (MathWorks R2026a)</b> was chosen as the sole programming language for this assignment based on the following reasons:
+    <b>MATLAB (MathWorks R2026a)</b> was chosen as the programming language for this assignment based on the following reasons:
     <br/>
-    1. <b>Industry & Engineering Academic Standard:</b> MATLAB is the foundational computing environment for engineering mathematics, signals, and communication systems in the Faculty of IET at GUC.
+    1. <b>Industry & Engineering Academic Standard:</b> MATLAB is the standard computing environment for engineering mathematics, signals, and communication systems in the Faculty of IET at GUC.
     <br/>
     2. <b>High-Performance Native Matrix Manipulation:</b> Multivariable linear system solves (such as Newton-Raphson Jacobian solves <code>J \\ (-F)</code> in Problem 1 and Vandermonde solves <code>V \\ y</code> in Problem 5) execute through LAPACK/BLAS-optimized routines without manual inversion.
     <br/>
-    3. <b>Specialized Built-In Verification Solvers:</b> Provides production-tested solvers (<code>fsolve</code> for non-linear systems, <code>polyfit/polyval</code> for interpolation, <code>fzero</code> for scalar root-finding, and <code>trapz</code> for numerical quadrature) to validate our custom student implementations.
+    3. <b>Specialized Built-In Solvers:</b> Provides production-tested solvers (<code>fsolve</code> for non-linear systems, <code>polyfit/polyval</code> for interpolation, <code>fzero</code> for scalar root-finding, and <code>trapz</code> for numerical quadrature) to validate and cross-check the numerical results.
     <br/>
     4. <b>Double-Precision IEEE 754 Compliance:</b> Eliminates nested-loop bottlenecks through native vectorization while preserving 64-bit numerical accuracy.
     """
@@ -596,7 +610,7 @@ def build_pdf():
     story.append(t_p4)
     story.append(Spacer(1, 4))
     
-    story.append(Paragraph("<b>Comprehensive Comparison of Root-Finding Methods (Tolerance = 1e-4 A):</b>", h2_style))
+    story.append(Paragraph("<b>Comparison of Root-Finding Methods (Tolerance = 1e-4 A):</b>", h2_style))
     comp_root_data = [
         [Paragraph("<b>Method</b>", table_hdr_style), Paragraph("<b>Initial Conditions</b>", table_hdr_style), Paragraph("<b>Iterations</b>", table_hdr_style), Paragraph("<b>Final Root [mA]</b>", table_hdr_style), Paragraph("<b>Residual |f(I)| [V]</b>", table_hdr_style), Paragraph("<b>Convergence Rate</b>", table_hdr_style)],
         [Paragraph("Bisection", table_cell_style), Paragraph("[0, 5 mA]", table_cell_style), Paragraph("5", table_cell_style), Paragraph("0.234375", table_cell_style), Paragraph("1.1218e-01", table_cell_style), Paragraph("Linear (r = 1)", table_cell_style)],
@@ -788,63 +802,6 @@ def build_pdf():
         story.append(Image("figures/fig_problem6.png", width=420, height=165))
         story.append(Paragraph("<b>Figure 6:</b> Harvested energy E_h vs number of constellation satellites N (left) and relative true errors on log scale (right).", caption_style))
 
-    story.append(PageBreak())
-
-    # =========================================================================
-    # PAGE 11: SECTION 8 - CONCLUSION & PACKAGE MANIFEST
-    # =========================================================================
-    story.append(Paragraph("8. Submission Package Verification & Summary", h1_style))
-    story.append(HRFlowable(width="100%", thickness=1, color=c_primary, spaceBefore=1, spaceAfter=4))
-    
-    p8_text = """
-    <b>Project Summary & Verification:</b><br/>
-    All analytical derivations and computational tasks specified in MATH502 Assignment 1 have been solved and validated against MATLAB built-in functions:
-    <br/><br/>
-    • <b>Problem 1 (LORAN Navigation):</b> Hand iterations 1 & 2 verified; rapid quadratic convergence to (254.2211, 219.3070) confirmed with <code>fsolve</code>.<br/>
-    • <b>Problem 2 (WSN RSSI):</b> Divided difference table established; 5m estimate (-57.45 dBm) verified against session measurement (-57.0 dBm); physical causes explained; Horner's form operation counts quantified.<br/>
-    • <b>Problem 3 (Diode KVL):</b> Non-linear equation bracketed; solved with Bisection (5 iterations) and Secant (3 iterations) to &lt; 10<sup>-4</sup> A; validated with <code>fzero</code> (0.250181 mA).<br/>
-    • <b>Problem 4 (Newton Diode):</b> Evaluated 1D Newton-Raphson from <i>I</i><sub>0</sub> = 0.35 mA and <i>I</i><sub>0</sub> = 1.0 mA, achieving quadratic convergence in only 2 iterations.<br/>
-    • <b>Problem 5 (Packet Latency):</b> Vandermonde matrix formulation demonstrated; extreme condition number analyzed; negative latency at 3 KB (-47.85 ms) physically and mathematically explained as a classic extrapolation trap.<br/>
-    • <b>Problem 6 (Satellite WET):</b> Exact closed-form integral derived analytically matching Dr. Shehab's research paper; evaluated with Multiple Trapezoid, Simpson's 1/3, and Monte-Carlo methods across <i>N</i> = 4 to 32 satellites.
-    <br/><br/>
-    <b>Submission Package Manifest:</b>
-    """
-    story.append(Paragraph(p8_text, body_style))
-    story.append(Spacer(1, 4))
-    
-    pkg_table_data = [
-        [Paragraph("<b>File Name</b>", table_hdr_style), Paragraph("<b>Problem</b>", table_hdr_style), Paragraph("<b>Key MATLAB Built-In Functions Used</b>", table_hdr_style)],
-        [Paragraph("<code>Problem1_LORAN.m</code>", table_cell_style), Paragraph("Problem 1", table_cell_style), Paragraph("<code>fsolve</code>, <code>det</code>, <code>norm</code>, backslash <code>\\</code>", table_cell_style)],
-        [Paragraph("<code>Problem2_RSSI.m</code>", table_cell_style), Paragraph("Problem 2", table_cell_style), Paragraph("<code>polyfit</code>, <code>polyval</code>, matrix indexing", table_cell_style)],
-        [Paragraph("<code>Problem3_Diode_Bisection_Secant.m</code>", table_cell_style), Paragraph("Problem 3", table_cell_style), Paragraph("<code>fzero</code>, anonymous functions <code>@</code>", table_cell_style)],
-        [Paragraph("<code>Problem4_Diode_Newton.m</code>", table_cell_style), Paragraph("Problem 4", table_cell_style), Paragraph("Analytical derivative modeling, relative tolerance check", table_cell_style)],
-        [Paragraph("<code>Problem5_Packet_Latency.m</code>", table_cell_style), Paragraph("Problem 5", table_cell_style), Paragraph("<code>vander</code>, <code>cond</code>, <code>polyval</code>, backslash <code>\\</code>", table_cell_style)],
-        [Paragraph("<code>Problem6_Satellite_Energy_Harvesting.m</code>", table_cell_style), Paragraph("Problem 6", table_cell_style), Paragraph("<code>trapz</code>, <code>atan</code>, <code>rand</code>, <code>mean</code>, <code>linspace</code>", table_cell_style)],
-        [Paragraph("<code>run_all.m</code>", table_cell_style), Paragraph("Master Script", table_cell_style), Paragraph("Sequential batch execution runner for all 6 problems", table_cell_style)],
-    ]
-    t_pkg = Table(pkg_table_data, colWidths=[150, 75, 279])
-    t_pkg.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), c_primary),
-        ('GRID', (0,0), (-1,-1), 0.5, c_border),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, c_bg_light]),
-        ('TOPPADDING', (0,0), (-1,-1), 2.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
-    ]))
-    story.append(t_pkg)
-    story.append(Spacer(1, 6))
-    
-    gdrive_box = """
-    <b>Deliverable 4: Submission Package & Google Drive Link Instruction:</b><br/>
-    All deliverables (this formal PDF report and all executable MATLAB scripts) are organized inside the folder <code>MATH502_Assignment1_Submission</code>. Upload this folder to Google Drive with 'Anyone with the link can view' permissions and send the link to <b>bahaaeldin.ibrahim@guc.edu.eg</b> before the November 6 deadline.
-    """
-    gdrive_table = Table([[Paragraph(gdrive_box, callout_style)]], colWidths=[504])
-    gdrive_table.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#f0fdf4')),
-        ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#22c55e')),
-        ('PADDING', (0,0), (-1,-1), 6),
-    ]))
-    story.append(gdrive_table)
-    
     doc.build(story, canvasmaker=NumberedCanvas)
     print(f"Report PDF built successfully: {pdf_filename}")
 

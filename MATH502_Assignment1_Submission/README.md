@@ -19,7 +19,7 @@
 
 | File Name | Description |
 | :--- | :--- |
-| **`MATH502_Assignment1_Report.pdf`** | Comprehensive formal report with cover page, language justification, full mathematical analysis, pen-and-paper iterations, code listings, tables of results, and embedded figures. |
+| **`MATH502_Assignment1_Report.pdf`** | Formal student report with cover page, language justification, mathematical derivations, manual pen-and-paper iterations, code listings, result tables, and plots. |
 | **`run_all.m`** | Master MATLAB script that runs all six problem scripts sequentially and prints formatted outputs. |
 | **`Problem1_LORAN.m`** | Script solving the LORAN 2D non-linear hyperbola system via Newton-Raphson and verifying against built-in `fsolve`. |
 | **`Problem2_RSSI.m`** | Script computing Newton's divided difference table, evaluating at 5m, comparing against -57 dBm, and presenting Horner's form. |

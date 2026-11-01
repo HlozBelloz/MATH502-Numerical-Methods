@@ -14,7 +14,7 @@
 ```
 MATH502-Numerical-Methods/
 ├── MATH502_Assignment1_Submission/         # Official submission package
-│   ├── MATH502_Assignment1_Report.pdf      # 11-page comprehensive report (PDF)
+│   ├── MATH502_Assignment1_Report.pdf      # 10-page formal report (PDF)
 │   ├── run_all.m                           # Master MATLAB execution script
 │   ├── Problem1_LORAN.m                    # 2D Newton-Raphson LORAN hyperbola solver
 │   ├── Problem2_RSSI.m                     # Newton divided difference & Horner's scheme
@@ -82,5 +82,6 @@ In accordance with course guidelines, **MATLAB (MathWorks R2026a)** was chosen a
 ---
 
 ## 📄 Formal Report
-The complete 11-page formal student submission report is available at:  
+The complete 10-page formal student report is available at:  
 [**`MATH502_Assignment1_Report.pdf`**](MATH502_Assignment1_Submission/MATH502_Assignment1_Report.pdf)
+
