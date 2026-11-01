@@ -1,0 +1,21 @@
+# MATLAB temporary and autosave files
+*.asv
+*.m~
+*.slxc
+*.mex*
+*.mat
+*.log
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
