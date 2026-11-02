@@ -1,6 +1,6 @@
 %% MATH502: Numerical Methods - Assignment 1
 % Problem 4: Diode DC Circuit Analysis using Newton-Raphson Method
-% Student: Mazen Altelbany (64-12371)
+% Students: Mazen Altelbany (64-12371) & Yahia Talaat (64-3581)
 % German University in Cairo (GUC)
 
 clear; clc; close all;

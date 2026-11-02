@@ -10,8 +10,8 @@
 ## 👥 Student Details
 - **Student 1 Name:** Mazen Altelbany
 - **Student 1 ID:** 64-12371 (Faculty of IET, GUC)
-- **Student 2 Name:** [Partner Full Name]
-- **Student 2 ID:** [Partner ID] (Faculty of IET, GUC)
+- **Student 2 Name:** Yahia Talaat
+- **Student 2 ID:** 64-3581 (Faculty of IET, GUC)
 
 ---
 

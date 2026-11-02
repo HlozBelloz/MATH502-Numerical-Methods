@@ -5,7 +5,7 @@
 **Course:** MATH502 — Numerical Methods / Scientific Computing  
 **Instructor:** Dr. Mohammad Shehab  
 **Teaching Assistant:** Eng. Bahaaeldin Ibrahim (`bahaaeldin.ibrahim@guc.edu.eg`)  
-**Student:** Mazen Altelbany (64-12371)
+**Students:** Mazen Altelbany (64-12371) & Yahia Talaat (64-3581)
 
 ---
 

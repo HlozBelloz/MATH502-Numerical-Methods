@@ -1,12 +1,12 @@
 %% MATH502: Numerical Methods - Assignment 1
 % Master Script: Runs Problems 1 through 6
-% Student: Mazen Altelbany (64-12371)
+% Students: Mazen Altelbany (64-12371) & Yahia Talaat (64-3581)
 % German University in Cairo (GUC)
 
 clear; clc; close all;
 
 fprintf('MATH502: Numerical Methods - Assignment 1\n');
-fprintf('Student: Mazen Altelbany (64-12371)\n\n');
+fprintf('Students: Mazen Altelbany (64-12371) & Yahia Talaat (64-3581)\n\n');
 
 fprintf('>>> Running Problem 1: LORAN Navigation...\n');
 run('Problem1_LORAN.m');

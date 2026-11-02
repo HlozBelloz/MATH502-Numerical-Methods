@@ -80,7 +80,7 @@ def build_pdf():
         topMargin=48,
         bottomMargin=48,
         title="MATH502 Assignment 1 Report",
-        author="Mazen Altelbany",
+        author="Mazen Altelbany & Yahia Talaat",
         subject="MATH502 Numerical Methods",
         creator="MATLAB R2026a"
     )
@@ -223,7 +223,7 @@ def build_pdf():
         [Paragraph("<b>Programming Language:</b>", body_style), Paragraph("MATLAB (MathWorks R2026a)", body_style)],
         [Paragraph("<b>Submission Date:</b>", body_style), Paragraph("November 6, 2026", body_style)],
         [Paragraph("<b>Student 1 Name & ID:</b>", body_style), Paragraph("Mazen Altelbany &nbsp;&nbsp;|&nbsp;&nbsp; <b>ID:</b> 64-12371 &nbsp;&nbsp;|&nbsp;&nbsp; <b>Tutorial:</b> T-01", body_style)],
-        [Paragraph("<b>Student 2 Name & ID:</b>", body_style), Paragraph("[Partner Full Name] &nbsp;&nbsp;|&nbsp;&nbsp; <b>ID:</b> [Partner ID] &nbsp;&nbsp;|&nbsp;&nbsp; <b>Tutorial:</b> T-02", body_style)],
+        [Paragraph("<b>Student 2 Name & ID:</b>", body_style), Paragraph("Yahia Talaat &nbsp;&nbsp;|&nbsp;&nbsp; <b>ID:</b> 64-3581 &nbsp;&nbsp;|&nbsp;&nbsp; <b>Tutorial:</b> T-02", body_style)],
     ]
     info_table = Table(info_data, colWidths=[140, 364])
     info_table.setStyle(TableStyle([

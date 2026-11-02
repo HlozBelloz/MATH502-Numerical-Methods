@@ -1,6 +1,6 @@
 %% MATH502: Numerical Methods - Assignment 1
 % Problem 1: LORAN Non-Linear System Navigation Solver
-% Student: Mazen Altelbany (64-12371)
+% Students: Mazen Altelbany (64-12371) & Yahia Talaat (64-3581)
 % German University in Cairo (GUC)
 
 clear; clc; close all;
