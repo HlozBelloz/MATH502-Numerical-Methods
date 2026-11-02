@@ -540,7 +540,7 @@ def build_pdf():
     story.append(Spacer(1, 2))
     
     p3_bis_sum = """
-    • <b>Bisection Result:</b> Converges in <b>5 iterations</b> with error bound (<i>b</i> - <i>a</i>)/2 = 7.8125 &times; 10<sup>-5</sup> A &lt; 10<sup>-4</sup> A, yielding <i>I</i> = <b>0.234375 mA</b> (or <i>I</i> = 0.2500 mA at 6 iterations with error 3.9 &times; 10<sup>-5</sup> A).
+    • <b>Bisection Result:</b> Converges in <b>5 iterations</b> with error bound (<i>b</i> - <i>a</i>)/2 = 7.8125 &times; 10<sup>-5</sup> A &lt; 10<sup>-4</sup> A, yielding <i>I</i> = <b>0.234375 mA</b> &approx; <b>0.2344 mA</b> (or <i>I</i> = <b>0.273438 mA</b> &approx; <b>0.2734 mA</b> if a 6th iteration is evaluated, with error bound 3.91 &times; 10<sup>-5</sup> A).
     """
     story.append(Paragraph(p3_bis_sum, body_style))
     story.append(Spacer(1, 3))
@@ -583,23 +583,23 @@ def build_pdf():
     story.append(HRFlowable(width="100%", thickness=1, color=c_primary, spaceBefore=1, spaceAfter=4))
     
     p4_desc = """
-    <b>Mathematical Formulation:</b> Applying 1D Newton-Raphson: <i>I</i><sub>k+1</sub> = <i>I</i><sub>k</sub> - <i>f</i>(<i>I</i><sub>k</sub>) / <i>f'</i>(<i>I</i><sub>k</sub>).
+    <b>Mathematical Formulation:</b> Applying 1D Newton-Raphson: <i>I</i><sub>k</sub> = <i>I</i><sub>k-1</sub> - <i>f</i>(<i>I</i><sub>k-1</sub>) / <i>f'</i>(<i>I</i><sub>k-1</sub>).
     <br/>
     Differentiating <i>f</i>(<i>I</i>) = <i>I R</i> + <i>n V</i><sub>T</sub> ln(<i>I</i> / <i>I</i><sub>s</sub> + 1) - <i>V</i><sub>s</sub>:
     <br/>
     &nbsp;&nbsp;&nbsp;&nbsp;<i>f'</i>(<i>I</i>) = <i>R</i> + <i>n V</i><sub>T</sub> / (<i>I</i> + <i>I</i><sub>s</sub>)
     <br/>
-    Since <i>f'</i>(<i>I</i>) &ge; <i>R</i> = 1000 &Omega; &gt; 0 for all physical currents <i>I</i> &ge; 0, no horizontal tangents or numerical blowups occur, ensuring quadratic convergence.
+    <b>Convergence Properties:</b> Newton-Raphson achieves asymptotic quadratic convergence (|<i>e</i><sub>k</sub>| &le; <i>M</i> |<i>e</i><sub>k-1</sub>|<sup>2</sup>) because <i>f</i>(<i>I</i>) is smooth (<i>C</i><sup>&infin;</sup>) and the root is <b>simple</b>: <i>f'</i>(<i>I</i>*) = <i>R</i> + <i>n V</i><sub>T</sub> / (<i>I</i>* + <i>I</i><sub>s</sub>) &approx; 1155 &Omega; &ne; 0. Furthermore, because <i>f'</i>(<i>I</i>) &ge; <i>R</i> = 1000 &Omega; &gt; 0 for all <i>I</i> &ge; 0, the derivative is strictly bounded away from zero, preventing division-by-zero singularities or horizontal tangents across the physical domain.
     """
     story.append(Paragraph(p4_desc, body_style))
     story.append(Spacer(1, 3))
     
     p4_table_data = [
-        [Paragraph("<b>Initial Guess</b>", table_hdr_style), Paragraph("<b>Iter k</b>", table_hdr_style), Paragraph("<b>I_k [mA]</b>", table_hdr_style), Paragraph("<b>f(I_k) [V]</b>", table_hdr_style), Paragraph("<b>f'(I_k) [Ohm]</b>", table_hdr_style), Paragraph("<b>|Delta I| [A]</b>", table_hdr_style)],
-        [Paragraph("<b>(a) I0 = 0.35 mA</b><br/>(Close to root)", table_cell_style), Paragraph("1<br/>2", table_cell_style), Paragraph("0.248416<br/><b>0.250180</b>", table_cell_style), Paragraph("+1.1251e-01<br/>-2.0391e-03", table_cell_style), Paragraph("1.1108e+03<br/>1.1561e+03", table_cell_style), Paragraph("1.0158e-04<br/><b>1.7638e-06</b>", table_cell_style)],
-        [Paragraph("<b>(b) I0 = 1.00 mA</b><br/>(Farther from root)", table_cell_style), Paragraph("1<br/>2", table_cell_style), Paragraph("0.226450<br/><b>0.250011</b>", table_cell_style), Paragraph("+8.0354e-01<br/>-2.7595e-02", table_cell_style), Paragraph("1.0388e+03<br/>1.1712e+03", table_cell_style), Paragraph("7.7355e-04<br/><b>2.3561e-05</b>", table_cell_style)],
+        [Paragraph("<b>Initial Guess</b>", table_hdr_style), Paragraph("<b>Iter k</b>", table_hdr_style), Paragraph("<b>I_{k-1} [mA]</b>", table_hdr_style), Paragraph("<b>f(I_{k-1}) [V]</b>", table_hdr_style), Paragraph("<b>f'(I_{k-1}) [&Omega;]</b>", table_hdr_style), Paragraph("<b>|&Delta;I_k| [A]</b>", table_hdr_style), Paragraph("<b>I_k [mA]</b>", table_hdr_style)],
+        [Paragraph("<b>(a) I0 = 0.35 mA</b><br/>(Close to root)", table_cell_style), Paragraph("1<br/>2", table_cell_style), Paragraph("0.350000<br/>0.248416", table_cell_style), Paragraph("+1.1251e-01<br/>-2.0391e-03", table_cell_style), Paragraph("1.1108e+03<br/>1.1561e+03", table_cell_style), Paragraph("1.0158e-04<br/><b>1.7638e-06</b>", table_cell_style), Paragraph("0.248416<br/><b>0.250180</b>", table_cell_style)],
+        [Paragraph("<b>(b) I0 = 1.00 mA</b><br/>(Farther from root)", table_cell_style), Paragraph("1<br/>2", table_cell_style), Paragraph("1.000000<br/>0.226450", table_cell_style), Paragraph("+8.0354e-01<br/>-2.7595e-02", table_cell_style), Paragraph("1.0388e+03<br/>1.1712e+03", table_cell_style), Paragraph("7.7355e-04<br/><b>2.3561e-05</b>", table_cell_style), Paragraph("0.226450<br/><b>0.250011</b>", table_cell_style)],
     ]
-    t_p4 = Table(p4_table_data, colWidths=[105, 45, 84, 90, 90, 90])
+    t_p4 = Table(p4_table_data, colWidths=[90, 36, 75, 78, 75, 75, 75])
     t_p4.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), c_primary),
         ('GRID', (0,0), (-1,-1), 0.5, c_border),
@@ -677,7 +677,7 @@ def build_pdf():
     • <i>c</i><sub>3</sub> = +6.75374182 &times; 10<sup>-5</sup> &nbsp;&nbsp;|&nbsp;&nbsp; <i>c</i><sub>2</sub> = -1.28304368 &times; 10<sup>-2</sup> &nbsp;&nbsp;|&nbsp;&nbsp; <i>c</i><sub>1</sub> = +1.28842461 &times; 10<sup>0</sup><br/>
     • <i>c</i><sub>0</sub> = -5.16017635 &times; 10<sup>1</sup>
     <br/>
-    <b>Condition Number:</b> cond(<i>V</i>) = <b>2.2646 &times; 10<sup>19</sup></b>. The Vandermonde matrix is severely ill-conditioned, magnifying floating-point roundoff near machine epsilon (10<sup>-16</sup>).
+    <b>Condition Number & Precision Loss:</b> cond(<i>V</i>) = <b>2.2646 &times; 10<sup>19</sup></b>. In IEEE 754 double precision (&epsilon;<sub>mach</sub> &approx; 2.22 &times; 10<sup>-16</sup>), the theoretical relative error amplification bound is cond(<i>V</i>) &middot; &epsilon;<sub>mach</sub> &approx; (2.26 &times; 10<sup>19</sup>)(2.22 &times; 10<sup>-16</sup>) &approx; <b>5.0 &times; 10<sup>3</sup> (500,000%)</b>. Because this bound far exceeds 100%, roundoff errors are magnified by over 3 orders of magnitude above the signal, meaning the computed high-order polynomial coefficients can retain <b>no reliable significant digits</b>.
     """
     story.append(Paragraph(p5_vander_text, body_style))
     story.append(Spacer(1, 3))
@@ -771,14 +771,14 @@ def build_pdf():
     
     p6_table_data = [
         [Paragraph("<b>N</b>", table_hdr_style), Paragraph("<b>T [s]</b>", table_hdr_style), Paragraph("<b>Closed-Form [mJ]</b>", table_hdr_style), Paragraph("<b>Trapezoid [mJ]</b>", table_hdr_style), Paragraph("<b>Simpson [mJ]</b>", table_hdr_style), Paragraph("<b>Monte-Carlo [mJ]</b>", table_hdr_style), Paragraph("<b>e_Trap (%)</b>", table_hdr_style), Paragraph("<b>e_Simp (%)</b>", table_hdr_style), Paragraph("<b>e_MC (%)</b>", table_hdr_style)],
-        [Paragraph("4", table_cell_style), Paragraph("44.4", table_cell_style), Paragraph("0.7381", table_cell_style), Paragraph("0.7381", table_cell_style), Paragraph("0.7381", table_cell_style), Paragraph("0.7371", table_cell_style), Paragraph("2.35e-04", table_cell_style), Paragraph("1.78e-08", table_cell_style), Paragraph("0.14 %", table_cell_style)],
-        [Paragraph("8", table_cell_style), Paragraph("99.6", table_cell_style), Paragraph("3.7359", table_cell_style), Paragraph("3.7359", table_cell_style), Paragraph("3.7359", table_cell_style), Paragraph("3.7302", table_cell_style), Paragraph("2.34e-04", table_cell_style), Paragraph("1.78e-08", table_cell_style), Paragraph("0.15 %", table_cell_style)],
-        [Paragraph("12", table_cell_style), Paragraph("152.4", table_cell_style), Paragraph("8.9604", table_cell_style), Paragraph("8.9604", table_cell_style), Paragraph("8.9604", table_cell_style), Paragraph("8.9482", table_cell_style), Paragraph("2.34e-04", table_cell_style), Paragraph("1.77e-08", table_cell_style), Paragraph("0.14 %", table_cell_style)],
-        [Paragraph("16", table_cell_style), Paragraph("204.7", table_cell_style), Paragraph("16.4181", table_cell_style), Paragraph("16.4181", table_cell_style), Paragraph("16.4181", table_cell_style), Paragraph("16.4011", table_cell_style), Paragraph("2.34e-04", table_cell_style), Paragraph("1.77e-08", table_cell_style), Paragraph("0.10 %", table_cell_style)],
-        [Paragraph("20", table_cell_style), Paragraph("257.0", table_cell_style), Paragraph("26.1108", table_cell_style), Paragraph("26.1108", table_cell_style), Paragraph("26.1108", table_cell_style), Paragraph("26.1284", table_cell_style), Paragraph("2.33e-04", table_cell_style), Paragraph("1.76e-08", table_cell_style), Paragraph("0.07 %", table_cell_style)],
-        [Paragraph("24", table_cell_style), Paragraph("309.5", table_cell_style), Paragraph("38.0400", table_cell_style), Paragraph("38.0399", table_cell_style), Paragraph("38.0400", table_cell_style), Paragraph("38.1023", table_cell_style), Paragraph("2.33e-04", table_cell_style), Paragraph("1.75e-08", table_cell_style), Paragraph("0.16 %", table_cell_style)],
-        [Paragraph("28", table_cell_style), Paragraph("362.1", table_cell_style), Paragraph("52.2067", table_cell_style), Paragraph("52.2066", table_cell_style), Paragraph("52.2067", table_cell_style), Paragraph("52.3114", table_cell_style), Paragraph("2.32e-04", table_cell_style), Paragraph("1.74e-08", table_cell_style), Paragraph("0.20 %", table_cell_style)],
-        [Paragraph("32", table_cell_style), Paragraph("415.1", table_cell_style), Paragraph("68.6121", table_cell_style), Paragraph("68.6120", table_cell_style), Paragraph("68.6121", table_cell_style), Paragraph("68.7905", table_cell_style), Paragraph("2.31e-04", table_cell_style), Paragraph("1.73e-08", table_cell_style), Paragraph("0.26 %", table_cell_style)],
+        [Paragraph("4", table_cell_style), Paragraph("44.4", table_cell_style), Paragraph("0.7381", table_cell_style), Paragraph("0.7381", table_cell_style), Paragraph("0.7381", table_cell_style), Paragraph("0.7439", table_cell_style), Paragraph("5.21e-04", table_cell_style), Paragraph("1.50e-08", table_cell_style), Paragraph("0.78 %", table_cell_style)],
+        [Paragraph("8", table_cell_style), Paragraph("99.6", table_cell_style), Paragraph("3.7359", table_cell_style), Paragraph("3.7359", table_cell_style), Paragraph("3.7359", table_cell_style), Paragraph("3.6944", table_cell_style), Paragraph("2.91e-04", table_cell_style), Paragraph("1.90e-08", table_cell_style), Paragraph("1.11 %", table_cell_style)],
+        [Paragraph("12", table_cell_style), Paragraph("152.4", table_cell_style), Paragraph("8.9604", table_cell_style), Paragraph("8.9604", table_cell_style), Paragraph("8.9604", table_cell_style), Paragraph("8.8949", table_cell_style), Paragraph("1.92e-04", table_cell_style), Paragraph("1.41e-08", table_cell_style), Paragraph("0.73 %", table_cell_style)],
+        [Paragraph("16", table_cell_style), Paragraph("204.7", table_cell_style), Paragraph("16.4181", table_cell_style), Paragraph("16.4181", table_cell_style), Paragraph("16.4181", table_cell_style), Paragraph("16.5086", table_cell_style), Paragraph("1.42e-04", table_cell_style), Paragraph("1.09e-08", table_cell_style), Paragraph("0.55 %", table_cell_style)],
+        [Paragraph("20", table_cell_style), Paragraph("257.0", table_cell_style), Paragraph("26.1108", table_cell_style), Paragraph("26.1108", table_cell_style), Paragraph("26.1108", table_cell_style), Paragraph("26.3255", table_cell_style), Paragraph("1.13e-04", table_cell_style), Paragraph("8.75e-09", table_cell_style), Paragraph("0.82 %", table_cell_style)],
+        [Paragraph("24", table_cell_style), Paragraph("309.5", table_cell_style), Paragraph("38.0400", table_cell_style), Paragraph("38.0399", table_cell_style), Paragraph("38.0400", table_cell_style), Paragraph("37.9426", table_cell_style), Paragraph("9.32e-05", table_cell_style), Paragraph("7.51e-09", table_cell_style), Paragraph("0.26 %", table_cell_style)],
+        [Paragraph("28", table_cell_style), Paragraph("362.1", table_cell_style), Paragraph("52.2067", table_cell_style), Paragraph("52.2066", table_cell_style), Paragraph("52.2067", table_cell_style), Paragraph("51.6342", table_cell_style), Paragraph("7.93e-05", table_cell_style), Paragraph("1.64e-08", table_cell_style), Paragraph("1.10 %", table_cell_style)],
+        [Paragraph("32", table_cell_style), Paragraph("415.1", table_cell_style), Paragraph("68.6121", table_cell_style), Paragraph("68.6121", table_cell_style), Paragraph("68.6121", table_cell_style), Paragraph("66.6909", table_cell_style), Paragraph("6.89e-05", table_cell_style), Paragraph("1.88e-07", table_cell_style), Paragraph("2.80 %", table_cell_style)],
     ]
     t_p6 = Table(p6_table_data, colWidths=[24, 46, 68, 68, 68, 68, 54, 54, 54])
     t_p6.setStyle(TableStyle([
@@ -793,14 +793,14 @@ def build_pdf():
     story.append(Spacer(1, 3))
     
     p6_concl_text = """
-    <b>Observations:</b> Simpson's 1/3 rule delivers near machine-precision accuracy (<i>e</i> &sim; 10<sup>-8</sup>%), Multiple Trapezoidal rule demonstrates solid second-order convergence (<i>e</i> &sim; 10<sup>-4</sup>%), and Monte-Carlo achieves statistical accuracy within 0.2%. Harvested energy scales rapidly from 0.74 mJ to 68.61 mJ as constellation size expands from 4 to 32 satellites.
+    <b>Observations:</b> Simpson's 1/3 rule delivers near machine-precision accuracy (<i>e</i> &sim; 10<sup>-8</sup>% to 10<sup>-7</sup>%), Multiple Trapezoidal rule demonstrates solid second-order convergence (<i>e</i> &sim; 10<sup>-4</sup>% to 10<sup>-5</sup>%), and Monte-Carlo achieves statistical accuracy within 0.2% to 2.8% for <i>M</i> = 10,000 samples. Harvested energy scales rapidly from 0.74 mJ to 68.61 mJ as constellation size expands from 4 to 32 satellites.
     """
     story.append(Paragraph(p6_concl_text, body_style))
     story.append(Spacer(1, 4))
     
     if os.path.exists("figures/fig_problem6.png"):
         story.append(Image("figures/fig_problem6.png", width=420, height=165))
-        story.append(Paragraph("<b>Figure 6:</b> Harvested energy E_h vs number of constellation satellites N (left) and relative true errors on log scale (right).", caption_style))
+        story.append(Paragraph("<b>Figure 6:</b> Harvested energy E_h vs number of constellation satellites N (left) and relative true errors on log scale (right) for K = 100 intervals and M = 10,000 Monte-Carlo samples.", caption_style))
 
     doc.build(story, canvasmaker=NumberedCanvas)
     print(f"Report PDF built successfully: {pdf_filename}")

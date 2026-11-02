@@ -33,9 +33,9 @@ for case_idx = 1:2
     iter_count = 0;
     max_iter = 50;
     
-    fprintf('%-5s %-16s %-16s %-16s %-16s\n', ...
-            'Iter', 'I_k [mA]', 'f(I_k) [V]', 'f''(I_k) [Ohm]', '|Delta I| [A]');
-    fprintf('-----------------------------------------------------------------------------\n');
+    fprintf('%-5s %-14s %-16s %-16s %-14s %-14s\n', ...
+            'Iter', 'I_{k-1} [mA]', 'f(I_{k-1}) [V]', 'f''(I_{k-1}) [Ohm]', '|Delta I| [A]', 'I_k [mA]');
+    fprintf('---------------------------------------------------------------------------------------------\n');
     
     while iter_count < max_iter
         iter_count = iter_count + 1;
@@ -45,8 +45,8 @@ for case_idx = 1:2
         delta = -f_val / df_val;
         I_next = I_k + delta;
         
-        fprintf('%-5d %-16.6f %-16.4e %-16.4e %-16.4e\n', ...
-                iter_count, I_next*1e3, f_val, df_val, abs(delta));
+        fprintf('%-5d %-14.6f %-16.4e %-16.4e %-14.4e %-14.6f\n', ...
+                iter_count, I_k*1e3, f_val, df_val, abs(delta), I_next*1e3);
         
         if abs(delta) < tol || abs(f(I_next)) < tol
             break;
@@ -72,9 +72,13 @@ fprintf('  Newton-Raphson (a)      I0 = 0.35 mA                     2     \n');
 fprintf('  Newton-Raphson (b)      I0 = 1.00 mA                     2     \n');
 fprintf('  ---------------------------------------------------------------\n');
 fprintf('  All methods successfully converge to the physical current:\n');
-fprintf('  I* ≈ 0.250181 mA (corresponding to VD ≈ 0.7498 V, VR ≈ 0.2502 V).\n');
-fprintf('  Newton''s method displays quadratic convergence and achieves\n');
-fprintf('  the required 10^-4 A tolerance in just 2 iterations!\n\n');
+fprintf('  I* ≈ 0.250181 mA (corresponding to VD ≈ 0.7498 V, VR ≈ 0.2502 V).\n\n');
+fprintf('  Theoretical Convergence Analysis:\n');
+fprintf('  - Newton-Raphson achieves quadratic convergence (|e_k| <= M |e_{k-1}|^2)\n');
+fprintf('    because f(I) is C^infinity smooth and the root is simple: f''(I*) ≈ 1155 Ohm != 0.\n');
+fprintf('  - The lower bound f''(I) >= R = 1000 Ohm > 0 prevents division-by-zero or\n');
+fprintf('    horizontal tangent singularities throughout the physical domain I >= 0.\n');
+fprintf('  - Both initial guesses converge within 2 iterations for tolerance 10^-4 A.\n\n');
 
 fprintf('Problem 4 Complete.\n');
 

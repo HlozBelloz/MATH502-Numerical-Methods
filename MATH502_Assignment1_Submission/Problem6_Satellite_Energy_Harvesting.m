@@ -157,5 +157,37 @@ fprintf('     stochastic validation but less efficient than quadrature for 1D sm
 fprintf('  4. Harvested energy scales proportionally to N^2 * T(N), demonstrating significant\n');
 fprintf('     energy harvesting gains as the constellation grid size expands.\n\n');
 
+%% Plot Harvested Energy and Relative Errors
+figure('Name', 'Problem 6: Satellite Energy Harvesting', 'Position', [100, 100, 900, 400]);
+
+% Left Subplot: Harvested Energy vs N
+subplot(1, 2, 1);
+plot(N_values, Eh_exact_all, 'k-', 'LineWidth', 2.0); hold on;
+plot(N_values, Eh_trap_all, 's--', 'Color', [0.12, 0.23, 0.54], 'LineWidth', 1.5, 'MarkerSize', 6);
+plot(N_values, Eh_simp_all, '^-.', 'Color', [0.05, 0.58, 0.53], 'LineWidth', 1.5, 'MarkerSize', 6);
+plot(N_values, Eh_mc_all, 'o:', 'Color', [0.85, 0.47, 0.02], 'LineWidth', 1.5, 'MarkerSize', 5);
+grid on;
+xlabel('Number of Constellation Satellites (N)', 'FontWeight', 'bold');
+ylabel('Harvested Energy E_h [mJ]', 'FontWeight', 'bold');
+title('Harvested Energy Scaling vs. Grid Size', 'FontWeight', 'bold');
+legend('Exact Analytical', sprintf('Trapezoidal (K=%d)', K_steps), ...
+       sprintf('Simpson 1/3 (K=%d)', K_steps), sprintf('Monte-Carlo (M=%d)', M_mc), ...
+       'Location', 'northwest');
+xticks(N_values);
+
+% Right Subplot: Relative True Error on Log Scale
+subplot(1, 2, 2);
+semilogy(N_values, err_trap_rel, 's--', 'Color', [0.12, 0.23, 0.54], 'LineWidth', 1.5, 'MarkerSize', 6); hold on;
+semilogy(N_values, err_simp_rel, '^-.', 'Color', [0.05, 0.58, 0.53], 'LineWidth', 1.5, 'MarkerSize', 6);
+semilogy(N_values, err_mc_rel, 'o:', 'Color', [0.85, 0.47, 0.02], 'LineWidth', 1.5, 'MarkerSize', 5);
+grid on;
+xlabel('Number of Constellation Satellites (N)', 'FontWeight', 'bold');
+ylabel('Relative True Error \epsilon_t [%] (Log Scale)', 'FontWeight', 'bold');
+title('Quadrature Method Accuracy Comparison', 'FontWeight', 'bold');
+legend(sprintf('Trapezoidal (K=%d)', K_steps), ...
+       sprintf('Simpson 1/3 (K=%d)', K_steps), sprintf('Monte-Carlo (M=%d)', M_mc), ...
+       'Location', 'east');
+xticks(N_values);
+
 fprintf('Problem 6 Complete.\n');
 

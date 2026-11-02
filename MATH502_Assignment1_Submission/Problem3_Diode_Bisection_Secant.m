@@ -59,6 +59,10 @@ root_bis = (a + b) / 2.0;
 fprintf('\nBisection Method Summary:\n');
 fprintf('  Number of iterations needed: %d\n', iter_bis);
 fprintf('  Final root estimate:         I = %.6e A (%.4f mA)\n', root_bis, root_bis*1e3);
+fprintf('  Bracket after iter %d:        [%.4f, %.4f] mA\n', iter_bis, a*1e3, b*1e3);
+fprintf('  Maximum error bound:         (b - a)/2 = %.4e A (< 1e-4 A)\n', (b-a)/2);
+fprintf('  Note on 6th iteration:       If taken, bracket becomes [%.4f, %.4f] mA,\n', 0.234375, 0.3125);
+fprintf('                               with midpoint I = %.4f mA and bound %.4e A.\n', (0.234375 + 0.3125)/2, (0.3125 - 0.234375)/2);
 fprintf('  Function value at root:      f(I) = %.4e V\n\n', f(root_bis));
 
 % 2. SECANT METHOD
@@ -100,6 +104,24 @@ root_fzero = fzero(f, [0, 5e-3]);
 fprintf('[MATLAB Built-in fzero Verification]:\n');
 fprintf('  fzero Root: I = %.8e A (%.6f mA)\n', root_fzero, root_fzero*1e3);
 fprintf('  f(root_fzero) = %.4e V\n\n', f(root_fzero));
+
+%% Part (d): Plot f(I) over the interval [0, 5 mA]
+figure('Name', 'Problem 3: Diode DC Circuit Root-Finding', 'Position', [150, 150, 700, 450]);
+I_plot = linspace(0, 5e-3, 500);
+f_plot = f(I_plot);
+
+plot(I_plot * 1e3, f_plot, 'b-', 'LineWidth', 2.0); hold on;
+yline(0, 'k--', 'LineWidth', 1.2);
+plot(root_fzero * 1e3, 0, 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r');
+plot([a, b]*1e3, [f(a), f(b)], 'ks', 'MarkerSize', 6, 'MarkerFaceColor', 'y');
+
+grid on;
+xlabel('Current I [mA]', 'FontWeight', 'bold');
+ylabel('Non-Linear Function f(I) [V]', 'FontWeight', 'bold');
+title('Diode DC Circuit Root-Finding: f(I) vs. Current I', 'FontWeight', 'bold');
+legend('f(I) = I\cdot R + n V_T ln(I/I_s + 1) - V_s', 'f(I) = 0 Axis', ...
+       sprintf('Operating Root I* = %.4f mA', root_fzero*1e3), ...
+       'Final Bisection Bracket [a, b]', 'Location', 'northwest');
 
 fprintf('Problem 3 Complete.\n');
 

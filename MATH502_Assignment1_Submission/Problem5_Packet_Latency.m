@@ -24,7 +24,8 @@ V = vander(x);
 % Condition number
 cond_V = cond(V);
 fprintf('Vandermonde Matrix Dimension: %d x %d\n', size(V,1), size(V,2));
-fprintf('Condition Number cond(V) = %.4e (Severely Ill-Conditioned!)\n\n', cond_V);
+fprintf('Condition Number cond(V) = %.4e (Severely Ill-Conditioned!)\n', cond_V);
+fprintf('Precision loss bound: cond(V) * eps ≈ %.2e >> 1 (Amplification factor ~ 5000)\n\n', cond_V * eps);
 
 % Solve for polynomial coefficients using MATLAB backslash operator
 c = V \ y;
@@ -67,8 +68,9 @@ fprintf('     Evaluating at x = 3 kB is an EXTRAPOLATION far outside the domain.
 fprintf('  3. High-Order Polynomial Oscillation (Runge Phenomenon): High-degree polynomials\n');
 fprintf('     (degree 6 here) oscillate violently outside and near the boundaries of the data\n');
 fprintf('     range, causing catastrophic divergence for small x.\n');
-fprintf('  4. Ill-Conditioning: The condition number cond(V) ~ 10^19 means that numerical roundoff\n');
-fprintf('     and small perturbations explode exponentially outside the data span.\n');
+fprintf('  4. Ill-Conditioning & Precision Loss: With cond(V) ~ 2.3e19 and eps ~ 2.2e-16,\n');
+fprintf('     the bound cond(V)*eps ~ 5e3 >> 1. The error bound exceeds 100%%, amplifying roundoff\n');
+fprintf('     by orders of magnitude and leaving high-order coefficients with no reliable digits.\n');
 fprintf('  5. Proper Modeling Recommendation: To predict latency for small packets, engineers\n');
 fprintf('     should use a physically-grounded linear regression model (L(x) = a*x + b) or\n');
 fprintf('     piecewise spline interpolation, rather than global high-degree polynomials.\n\n');
