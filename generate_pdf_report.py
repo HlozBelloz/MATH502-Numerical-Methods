@@ -221,7 +221,7 @@ def build_pdf():
         [Paragraph("<b>Course Instructor:</b>", body_style), Paragraph("Dr. Mohammad Shehab", body_style)],
         [Paragraph("<b>Teaching Assistant:</b>", body_style), Paragraph("Eng. Bahaaeldin Ibrahim (bahaaeldin.ibrahim@guc.edu.eg)", body_style)],
         [Paragraph("<b>Programming Language:</b>", body_style), Paragraph("MATLAB (MathWorks R2026a)", body_style)],
-        [Paragraph("<b>Submission Date:</b>", body_style), Paragraph("November 6, 2026", body_style)],
+        [Paragraph("<b>Submission Date:</b>", body_style), Paragraph("November 14, 2026 (Extended)", body_style)],
         [Paragraph("<b>Student 1 Name & ID:</b>", body_style), Paragraph("Mazen Altelbany &nbsp;&nbsp;|&nbsp;&nbsp; <b>ID:</b> 64-12371 &nbsp;&nbsp;|&nbsp;&nbsp; <b>Tutorial:</b> T-01", body_style)],
         [Paragraph("<b>Student 2 Name & ID:</b>", body_style), Paragraph("Yahia Talaat &nbsp;&nbsp;|&nbsp;&nbsp; <b>ID:</b> 64-3581 &nbsp;&nbsp;|&nbsp;&nbsp; <b>Tutorial:</b> T-02", body_style)],
     ]
@@ -708,11 +708,11 @@ def build_pdf():
     story.append(HRFlowable(width="100%", thickness=1, color=c_primary, spaceBefore=1, spaceAfter=4))
     
     p6_desc = """
-    <b>Physical Context & Research Background:</b> Following the research paper <i>'Wireless Energy Transfer from Space to Ground via Satellite Constellation Grids'</i> (Shehab et al., 2024), we evaluate a grid of <i>N</i> LEO satellites, each equipped with <i>M</i> antennas, transferring energy to an Earth-based Wirelessly Chargeable Device (WCD). Through Maximum Ratio Transmission (MRT), the harvested energy scales as <i>M N</i><sup>2</sup>:
+    <b>Physical Context & Research Background:</b> Following the research paper <i>'Wireless Energy Transfer from Space to Ground via Satellite Constellation Grids'</i> (Shehab et al., 2024) and recent course clarifications, we evaluate a grid of <i>N</i> LEO satellites, each equipped with <i>M</i> antennas, transferring energy to an Earth-based Wirelessly Chargeable Device (WCD). Through Maximum Ratio Transmission (MRT), the received power scales as <i>P</i><sub>r</sub>(<i>t</i>) = <i>M N</i><sup>2</sup> <i>P</i><sub>r,single</sub>(<i>t</i>). As clarified by the instructor, the <i>M N</i><sup>2</sup> term appears in the received power; hence it is multiplied only once, and the full transit visibility region corresponds symmetrically to 2 &times; &int;<sub>0</sub><sup><i>T</i>/2</sup> <i>P</i><sub>h</sub>(<i>t</i>) <i>dt</i>:
     <br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<i>E</i><sub>h</sub> = <i>M N</i><sup>2</sup> &int;<sub>0</sub><sup><i>T</i></sup> <i>P</i><sub>h</sub>(<i>t</i>) <i>dt</i> = <i>M N</i><sup>2</sup> &mu; &int;<sub>0</sub><sup><i>T</i></sup> [ (<i>R</i> + <i>H</i>)<sup>2</sup> + <i>R</i><sup>2</sup> - 2(<i>R</i> + <i>H</i>)<i>R</i> cos&phi; cos(&omega;<i>t</i>) ]<sup>-1</sup> <i>dt</i>
+    &nbsp;&nbsp;&nbsp;&nbsp;<i>E</i><sub>h</sub> = 2 &int;<sub>0</sub><sup><i>T</i><sub>half</sub></sup> <i>P</i><sub>h</sub>(<i>t</i>) <i>dt</i> = 2 <i>M N</i><sup>2</sup> &mu; &int;<sub>0</sub><sup><i>T</i><sub>half</sub></sup> [ (<i>R</i> + <i>H</i>)<sup>2</sup> + <i>R</i><sup>2</sup> - 2(<i>R</i> + <i>H</i>)<i>R</i> cos&phi; cos(&omega;<i>t</i>) ]<sup>-1</sup> <i>dt</i>
     <br/>
-    where &mu; = &eta;<sub>h</sub> <i>P</i><sub>t</sub> <i>G</i><sub>t</sub> <i>G</i><sub>r</sub> [&lambda; / (4&pi;)]<sup>2</sup> &alpha;<sub>s</sub> &beta;<sub>s</sub>, and <i>T</i> = &theta;<sub>c</sub> / &omega;.
+    where &mu; = &eta;<sub>h</sub> <i>P</i><sub>t</sub> <i>G</i><sub>t</sub> <i>G</i><sub>r</sub> [&lambda; / (4&pi;)]<sup>2</sup> &alpha;<sub>s</sub> &beta;<sub>s</sub>, and <i>T</i><sub>half</sub> = <i>T</i>/2 = &theta;<sub>c</sub> / &omega;.
     """
     story.append(Paragraph(p6_desc, body_style))
     story.append(Spacer(1, 3))
@@ -738,26 +738,26 @@ def build_pdf():
     story.append(Paragraph("<b>Question 1: Closed-Form Analytical Solution Derivation:</b>", h2_style))
     p6_q1_text = """
     <b>Yes, an exact closed-form solution exists!</b><br/>
-    Let <i>A</i> = (<i>R</i> + <i>H</i>)<sup>2</sup> + <i>R</i><sup>2</sup> and <i>B</i> = 2<i>R</i>(<i>R</i> + <i>H</i>)cos&phi;. Using the <b>Weierstrass Half-Angle Substitution</b>:
+    Let <i>A</i> = (<i>R</i> + <i>H</i>)<sup>2</sup> + <i>R</i><sup>2</sup> and <i>B</i> = 2<i>R</i>(<i>R</i> + <i>H</i>)cos&phi;. Accounting for the full symmetric pass over [-<i>T</i>/2, <i>T</i>/2], the total energy is 2 &times; &int;<sub>0</sub><sup><i>T</i><sub>half</sub></sup> <i>P</i><sub>h</sub>(<i>t</i>) <i>dt</i>. Using the <b>Weierstrass Half-Angle Substitution</b>:
     <br/>
     &nbsp;&nbsp;&nbsp;&nbsp;<i>u</i> = tan(&omega;<i>t</i> / 2) &rarr; cos(&omega;<i>t</i>) = (1 - <i>u</i><sup>2</sup>) / (1 + <i>u</i><sup>2</sup>), &nbsp;&nbsp;&nbsp;&nbsp;<i>dt</i> = (2 / &omega;) &middot; <i>du</i> / (1 + <i>u</i><sup>2</sup>)
     <br/>
     Substituting into the integral:
     <br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<i>E</i><sub>h</sub> = <i>M N</i><sup>2</sup> &mu; &int;<sub>0</sub><sup>tan(&omega;<i>T</i>/2)</sup> [ <i>A</i> - <i>B</i>(1 - <i>u</i><sup>2</sup>)/(1 + <i>u</i><sup>2</sup>) ]<sup>-1</sup> [2 / &omega;(1 + <i>u</i><sup>2</sup>)] <i>du</i> = (2 <i>M N</i><sup>2</sup> &mu; / &omega;) &int;<sub>0</sub><sup>tan(&omega;<i>T</i>/2)</sup> [ (<i>A</i> - <i>B</i>) + (<i>A</i> + <i>B</i>)<i>u</i><sup>2</sup> ]<sup>-1</sup> <i>du</i>
+    &nbsp;&nbsp;&nbsp;&nbsp;<i>E</i><sub>h</sub> = 2 <i>M N</i><sup>2</sup> &mu; &int;<sub>0</sub><sup>tan(&omega;<i>T</i><sub>half</sub>/2)</sup> [ <i>A</i> - <i>B</i>(1 - <i>u</i><sup>2</sup>)/(1 + <i>u</i><sup>2</sup>) ]<sup>-1</sup> [2 / &omega;(1 + <i>u</i><sup>2</sup>)] <i>du</i> = (4 <i>M N</i><sup>2</sup> &mu; / &omega;) &int;<sub>0</sub><sup>tan(&omega;<i>T</i><sub>half</sub>/2)</sup> [ (<i>A</i> - <i>B</i>) + (<i>A</i> + <i>B</i>)<i>u</i><sup>2</sup> ]<sup>-1</sup> <i>du</i>
     <br/>
     Evaluating this standard arctangent integral yields:
     <br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<i>E</i><sub>h</sub> = [2 <i>M N</i><sup>2</sup> &mu; / (&omega; (<i>A</i><sup>2</sup> - <i>B</i><sup>2</sup>)<sup>1/2</sup>)] &middot; tan<sup>-1</sup>( [(<i>A</i> + <i>B</i>)/(<i>A</i> - <i>B</i>)]<sup>1/2</sup> tan(&omega;<i>T</i> / 2) )
+    &nbsp;&nbsp;&nbsp;&nbsp;<i>E</i><sub>h</sub> = [4 <i>M N</i><sup>2</sup> &mu; / (&omega; (<i>A</i><sup>2</sup> - <i>B</i><sup>2</sup>)<sup>1/2</sup>)] &middot; tan<sup>-1</sup>( [(<i>A</i> + <i>B</i>)/(<i>A</i> - <i>B</i>)]<sup>1/2</sup> tan(&omega;<i>T</i><sub>half</sub> / 2) )
     <br/>
     For an aligned coplanar ground track (&phi; = 0): <i>A</i> - <i>B</i> = <i>H</i><sup>2</sup>, <i>A</i> + <i>B</i> = (<i>H</i> + 2<i>R</i>)<sup>2</sup>, so (<i>A</i><sup>2</sup> - <i>B</i><sup>2</sup>)<sup>1/2</sup> = <i>H</i>(<i>H</i> + 2<i>R</i>) and [(<i>A</i>+<i>B</i>)/(<i>A</i>-<i>B</i>)]<sup>1/2</sup> = (<i>H</i> + 2<i>R</i>)/<i>H</i>.
     <br/><br/>
     <b>Final Exact Closed-Form Expression:</b>
     <br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<b><i>E</i><sub>h</sub> = [2 <i>M N</i><sup>2</sup> &mu; / (&omega; <i>H</i> (<i>H</i> + 2<i>R</i>))] &middot; tan<sup>-1</sup>( [(<i>H</i> + 2<i>R</i>)/<i>H</i>] tan(&omega;<i>T</i> / 2) )</b>
+    &nbsp;&nbsp;&nbsp;&nbsp;<b><i>E</i><sub>h</sub> = [4 <i>M N</i><sup>2</sup> &mu; / (&omega; <i>H</i> (<i>H</i> + 2<i>R</i>))] &middot; tan<sup>-1</sup>( [(<i>H</i> + 2<i>R</i>)/<i>H</i>] tan(&omega;<i>T</i><sub>half</sub> / 2) )</b>
     <br/><br/>
-    <i>Note: Using the reciprocal trigonometric identity tan<sup>-1</sup>(x) = &pi;/2 - tan<sup>-1</sup>(1/x), this expression is mathematically identical to Dr. Shehab's published formula:</i><br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<i>E</i><sub>h</sub> = [<i>M N</i><sup>2</sup> &mu; / (<i>H</i><sup>2</sup> &omega; + 2<i>HR</i> &omega;)] &middot; [ &pi; - 2 tan<sup>-1</sup>( [<i>H</i> cot(&omega;<i>T</i>/2)] / (<i>H</i> + 2<i>R</i>) ) ].
+    <i>Note: Using the reciprocal trigonometric identity tan<sup>-1</sup>(x) = &pi;/2 - tan<sup>-1</sup>(1/x), this expression is mathematically identical to:</i><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<i>E</i><sub>h</sub> = [2 <i>M N</i><sup>2</sup> &mu; / (<i>H</i><sup>2</sup> &omega; + 2<i>HR</i> &omega;)] &middot; [ &pi; - 2 tan<sup>-1</sup>( [<i>H</i> cot(&omega;<i>T</i><sub>half</sub>/2)] / (<i>H</i> + 2<i>R</i>) ) ].
     """
     story.append(Paragraph(p6_q1_text, body_style))
     
@@ -770,15 +770,15 @@ def build_pdf():
     story.append(HRFlowable(width="100%", thickness=1, color=c_primary, spaceBefore=1, spaceAfter=4))
     
     p6_table_data = [
-        [Paragraph("<b>N</b>", table_hdr_style), Paragraph("<b>T [s]</b>", table_hdr_style), Paragraph("<b>Closed-Form [mJ]</b>", table_hdr_style), Paragraph("<b>Trapezoid [mJ]</b>", table_hdr_style), Paragraph("<b>Simpson [mJ]</b>", table_hdr_style), Paragraph("<b>Monte-Carlo [mJ]</b>", table_hdr_style), Paragraph("<b>e_Trap (%)</b>", table_hdr_style), Paragraph("<b>e_Simp (%)</b>", table_hdr_style), Paragraph("<b>e_MC (%)</b>", table_hdr_style)],
-        [Paragraph("4", table_cell_style), Paragraph("44.4", table_cell_style), Paragraph("0.7381", table_cell_style), Paragraph("0.7381", table_cell_style), Paragraph("0.7381", table_cell_style), Paragraph("0.7439", table_cell_style), Paragraph("5.21e-04", table_cell_style), Paragraph("1.50e-08", table_cell_style), Paragraph("0.78 %", table_cell_style)],
-        [Paragraph("8", table_cell_style), Paragraph("99.6", table_cell_style), Paragraph("3.7359", table_cell_style), Paragraph("3.7359", table_cell_style), Paragraph("3.7359", table_cell_style), Paragraph("3.6944", table_cell_style), Paragraph("2.91e-04", table_cell_style), Paragraph("1.90e-08", table_cell_style), Paragraph("1.11 %", table_cell_style)],
-        [Paragraph("12", table_cell_style), Paragraph("152.4", table_cell_style), Paragraph("8.9604", table_cell_style), Paragraph("8.9604", table_cell_style), Paragraph("8.9604", table_cell_style), Paragraph("8.8949", table_cell_style), Paragraph("1.92e-04", table_cell_style), Paragraph("1.41e-08", table_cell_style), Paragraph("0.73 %", table_cell_style)],
-        [Paragraph("16", table_cell_style), Paragraph("204.7", table_cell_style), Paragraph("16.4181", table_cell_style), Paragraph("16.4181", table_cell_style), Paragraph("16.4181", table_cell_style), Paragraph("16.5086", table_cell_style), Paragraph("1.42e-04", table_cell_style), Paragraph("1.09e-08", table_cell_style), Paragraph("0.55 %", table_cell_style)],
-        [Paragraph("20", table_cell_style), Paragraph("257.0", table_cell_style), Paragraph("26.1108", table_cell_style), Paragraph("26.1108", table_cell_style), Paragraph("26.1108", table_cell_style), Paragraph("26.3255", table_cell_style), Paragraph("1.13e-04", table_cell_style), Paragraph("8.75e-09", table_cell_style), Paragraph("0.82 %", table_cell_style)],
-        [Paragraph("24", table_cell_style), Paragraph("309.5", table_cell_style), Paragraph("38.0400", table_cell_style), Paragraph("38.0399", table_cell_style), Paragraph("38.0400", table_cell_style), Paragraph("37.9426", table_cell_style), Paragraph("9.32e-05", table_cell_style), Paragraph("7.51e-09", table_cell_style), Paragraph("0.26 %", table_cell_style)],
-        [Paragraph("28", table_cell_style), Paragraph("362.1", table_cell_style), Paragraph("52.2067", table_cell_style), Paragraph("52.2066", table_cell_style), Paragraph("52.2067", table_cell_style), Paragraph("51.6342", table_cell_style), Paragraph("7.93e-05", table_cell_style), Paragraph("1.64e-08", table_cell_style), Paragraph("1.10 %", table_cell_style)],
-        [Paragraph("32", table_cell_style), Paragraph("415.1", table_cell_style), Paragraph("68.6121", table_cell_style), Paragraph("68.6121", table_cell_style), Paragraph("68.6121", table_cell_style), Paragraph("66.6909", table_cell_style), Paragraph("6.89e-05", table_cell_style), Paragraph("1.88e-07", table_cell_style), Paragraph("2.80 %", table_cell_style)],
+        [Paragraph("<b>N</b>", table_hdr_style), Paragraph("<b>T/2 [s]</b>", table_hdr_style), Paragraph("<b>Closed-Form [mJ]</b>", table_hdr_style), Paragraph("<b>Trapezoid [mJ]</b>", table_hdr_style), Paragraph("<b>Simpson [mJ]</b>", table_hdr_style), Paragraph("<b>Monte-Carlo [mJ]</b>", table_hdr_style), Paragraph("<b>e_Trap (%)</b>", table_hdr_style), Paragraph("<b>e_Simp (%)</b>", table_hdr_style), Paragraph("<b>e_MC (%)</b>", table_hdr_style)],
+        [Paragraph("4", table_cell_style), Paragraph("44.4", table_cell_style), Paragraph("1.4762", table_cell_style), Paragraph("1.4762", table_cell_style), Paragraph("1.4762", table_cell_style), Paragraph("1.4877", table_cell_style), Paragraph("5.21e-04", table_cell_style), Paragraph("1.50e-08", table_cell_style), Paragraph("0.78 %", table_cell_style)],
+        [Paragraph("8", table_cell_style), Paragraph("99.6", table_cell_style), Paragraph("7.4718", table_cell_style), Paragraph("7.4718", table_cell_style), Paragraph("7.4718", table_cell_style), Paragraph("7.3887", table_cell_style), Paragraph("2.91e-04", table_cell_style), Paragraph("1.90e-08", table_cell_style), Paragraph("1.11 %", table_cell_style)],
+        [Paragraph("12", table_cell_style), Paragraph("152.4", table_cell_style), Paragraph("17.9208", table_cell_style), Paragraph("17.9208", table_cell_style), Paragraph("17.9208", table_cell_style), Paragraph("17.7898", table_cell_style), Paragraph("1.92e-04", table_cell_style), Paragraph("1.41e-08", table_cell_style), Paragraph("0.73 %", table_cell_style)],
+        [Paragraph("16", table_cell_style), Paragraph("204.7", table_cell_style), Paragraph("32.8362", table_cell_style), Paragraph("32.8361", table_cell_style), Paragraph("32.8362", table_cell_style), Paragraph("33.0173", table_cell_style), Paragraph("1.42e-04", table_cell_style), Paragraph("1.09e-08", table_cell_style), Paragraph("0.55 %", table_cell_style)],
+        [Paragraph("20", table_cell_style), Paragraph("257.0", table_cell_style), Paragraph("52.2217", table_cell_style), Paragraph("52.2216", table_cell_style), Paragraph("52.2217", table_cell_style), Paragraph("52.6510", table_cell_style), Paragraph("1.13e-04", table_cell_style), Paragraph("8.75e-09", table_cell_style), Paragraph("0.82 %", table_cell_style)],
+        [Paragraph("24", table_cell_style), Paragraph("309.5", table_cell_style), Paragraph("76.0799", table_cell_style), Paragraph("76.0799", table_cell_style), Paragraph("76.0799", table_cell_style), Paragraph("75.8851", table_cell_style), Paragraph("9.32e-05", table_cell_style), Paragraph("7.51e-09", table_cell_style), Paragraph("0.26 %", table_cell_style)],
+        [Paragraph("28", table_cell_style), Paragraph("362.1", table_cell_style), Paragraph("104.4134", table_cell_style), Paragraph("104.4133", table_cell_style), Paragraph("104.4134", table_cell_style), Paragraph("103.2684", table_cell_style), Paragraph("7.93e-05", table_cell_style), Paragraph("1.64e-08", table_cell_style), Paragraph("1.10 %", table_cell_style)],
+        [Paragraph("32", table_cell_style), Paragraph("415.1", table_cell_style), Paragraph("137.2243", table_cell_style), Paragraph("137.2242", table_cell_style), Paragraph("137.2243", table_cell_style), Paragraph("133.3818", table_cell_style), Paragraph("6.89e-05", table_cell_style), Paragraph("1.88e-07", table_cell_style), Paragraph("2.80 %", table_cell_style)],
     ]
     t_p6 = Table(p6_table_data, colWidths=[24, 46, 68, 68, 68, 68, 54, 54, 54])
     t_p6.setStyle(TableStyle([
@@ -793,7 +793,7 @@ def build_pdf():
     story.append(Spacer(1, 3))
     
     p6_concl_text = """
-    <b>Observations:</b> Simpson's 1/3 rule delivers near machine-precision accuracy (<i>e</i> &sim; 10<sup>-8</sup>% to 10<sup>-7</sup>%), Multiple Trapezoidal rule demonstrates solid second-order convergence (<i>e</i> &sim; 10<sup>-4</sup>% to 10<sup>-5</sup>%), and Monte-Carlo achieves statistical accuracy within 0.2% to 2.8% for <i>M</i> = 10,000 samples. Harvested energy scales rapidly from 0.74 mJ to 68.61 mJ as constellation size expands from 4 to 32 satellites.
+    <b>Observations:</b> Simpson's 1/3 rule delivers near machine-precision accuracy (<i>e</i> &sim; 10<sup>-8</sup>% to 10<sup>-7</sup>%), Multiple Trapezoidal rule demonstrates solid second-order convergence (<i>e</i> &sim; 10<sup>-4</sup>% to 10<sup>-5</sup>%), and Monte-Carlo achieves statistical accuracy within 0.2% to 2.8% for <i>M</i> = 10,000 samples. Harvested energy scales rapidly from 1.48 mJ to 137.22 mJ as constellation size expands from 4 to 32 satellites over the complete symmetric visibility pass.
     """
     story.append(Paragraph(p6_concl_text, body_style))
     story.append(Spacer(1, 4))

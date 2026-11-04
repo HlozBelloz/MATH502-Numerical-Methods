@@ -265,7 +265,7 @@ def build_pdf():
         [Paragraph("<b>Course Instructor:</b>", body_style), Paragraph("Dr. Mohammad Shehab", body_style)],
         [Paragraph("<b>Teaching Assistant:</b>", body_style), Paragraph("Eng. Bahaaeldin Ibrahim (<code>bahaaeldin.ibrahim@guc.edu.eg</code>)", body_style)],
         [Paragraph("<b>Programming Language:</b>", body_style), Paragraph("MATLAB (MathWorks R2026a)", body_style)],
-        [Paragraph("<b>Submission Date:</b>", body_style), Paragraph("November 6, 2026", body_style)],
+        [Paragraph("<b>Submission Date:</b>", body_style), Paragraph("November 14, 2026 (Extended)", body_style)],
         [Paragraph("<b>Student 1 (Author):</b>", body_style), Paragraph("<b>Mazen Altelbany</b> &nbsp;&nbsp;|&nbsp;&nbsp; <b>ID:</b> 64-12371 &nbsp;&nbsp;|&nbsp;&nbsp; <b>Tutorial:</b> T-01", body_style)],
         [Paragraph("<b>Student 2 (Partner):</b>", body_style), Paragraph("<b>Yahia Talaat</b> &nbsp;&nbsp;|&nbsp;&nbsp; <b>ID:</b> 64-3581 &nbsp;&nbsp;|&nbsp;&nbsp; <b>Tutorial:</b> T-02", body_style)],
     ]
@@ -782,24 +782,24 @@ def build_pdf():
     
     p6_desc = r"""
     <b>Problem Statement & Research Paper Context:</b><br/>
-    Based on Dr. Mohammad Shehab's research paper <i>"Wireless Energy Transfer from Space to Ground via Satellite Constellation Grids"</i> (2024), we analyze a constellation of $N$ Low Earth Orbit (LEO) satellites, each equipped with $M$ antenna elements, wirelessly transferring RF energy to a ground Wirelessly Chargeable Device (WCD). With Maximum Ratio Transmission (MRT), the total harvested energy $E_h$ over access duration $T$ is:
+    Based on Dr. Mohammad Shehab's research paper <i>"Wireless Energy Transfer from Space to Ground via Satellite Constellation Grids"</i> (2024) and recent course updates (3/11/2026), we analyze a constellation of $N$ Low Earth Orbit (LEO) satellites, each equipped with $M$ antenna elements, wirelessly transferring RF energy to a ground Wirelessly Chargeable Device (WCD). With Maximum Ratio Transmission (MRT), the received power at the WCD is $P_r(t) = M N^2 P_{r,\text{single}}(t)$. The factor $M N^2$ is applied to the received power and therefore is multiplied only once (no double-multiplication in $E_h$). Furthermore, to accurately capture the full symmetric visibility pass of the satellite grid as it approaches and recedes, the integral spans $[-T/2, T/2]$, which is evaluated as:
     <br/>
-    $$E_h = M N^2 \int_0^T P_h(t)\, dt = M N^2 \mu \int_0^T \frac{dt}{(R+H)^2 + R^2 - 2(R+H)R \cos\phi \cos(\omega t)}$$
-    System parameters: Earth radius $R = 6378\text{ km}$, orbital altitude $H = 200\text{ km}$, orbital angular velocity $\omega = 1.182794 \times 10^{-3}\text{ rad/s}$, antennas per satellite $M = 8$, Friis constant $\mu = 8504.072\text{ W}\cdot\text{m}^2$, ground track alignment $\phi = 0$. Access window duration $T = \theta_c / \omega = 2\cos^{-1}(R/(R+H)) / \omega$.
+    $$E_h = 2 \int_0^{T_{\text{half}}} P_h(t)\, dt = 2 M N^2 \mu \int_0^{T_{\text{half}}} \frac{dt}{(R+H)^2 + R^2 - 2(R+H)R \cos\phi \cos(\omega t)}$$
+    System parameters: Earth radius $R = 6378\text{ km}$, orbital altitude $H = 200\text{ km}$, orbital angular velocity $\omega = 1.182794 \times 10^{-3}\text{ rad/s}$, antennas per satellite $M = 8$, Friis constant $\mu = 8504.072\text{ W}\cdot\text{m}^2$, ground track alignment $\phi = 0$. Zenith-to-horizon half-duration $T_{\text{half}} = T/2 = \theta_c / \omega$.
     <br/><br/>
     <b>Part 1: Analytical Closed-Form Derivation (Weierstrass Substitution):</b><br/>
     Defining $A = (R+H)^2 + R^2$ and $B = 2R(R+H)\cos\phi$, we apply the Weierstrass half-angle substitution $u = \tan(\omega t / 2)$, which yields $\cos(\omega t) = \frac{1-u^2}{1+u^2}$ and $dt = \frac{2}{\omega} \frac{du}{1+u^2}$:
     <br/>
-    $$E_h = M N^2 \mu \int_0^{\tan(\omega T / 2)} \frac{1}{A - B\left(\frac{1-u^2}{1+u^2}\right)} \left(\frac{2}{\omega (1+u^2)}\right) du = \frac{2 M N^2 \mu}{\omega} \int_0^{\tan(\omega T / 2)} \frac{du}{(A - B) + (A + B)u^2}$$
+    $$E_h = 2 M N^2 \mu \int_0^{\tan(\omega T_{\text{half}} / 2)} \frac{1}{A - B\left(\frac{1-u^2}{1+u^2}\right)} \left(\frac{2}{\omega (1+u^2)}\right) du = \frac{4 M N^2 \mu}{\omega} \int_0^{\tan(\omega T_{\text{half}} / 2)} \frac{du}{(A - B) + (A + B)u^2}$$
     For aligned coplanar ground tracks ($\phi = 0$): $A - B = (R+H)^2 + R^2 - 2R(R+H) = H^2$, and $A + B = (R+H)^2 + R^2 + 2R(R+H) = (H + 2R)^2$.
     <br/>
-    Therefore: $\sqrt{A^2 - B^2} = \sqrt{(A-B)(A+B)} = H(H + 2R)$, and $\sqrt{\frac{A+B}{A-B}} = \frac{H+2R}{H}$. Integrating:
+    Therefore: $\sqrt{A^2 - B^2} = \sqrt{(A-B)(A+B)} = H(H + 2R)$, and $\sqrt{\frac{A+B}{A-B}} = \frac{H+2R}{H}$. Integrating over the full symmetric visibility region:
     <br/>
-    $$E_h = \frac{2 M N^2 \mu}{\omega H (H + 2R)} \tan^{-1}\left( \frac{H + 2R}{H} \tan\left(\frac{\omega T}{2}\right) \right)$$
+    $$E_h = \frac{4 M N^2 \mu}{\omega H (H + 2R)} \tan^{-1}\left( \frac{H + 2R}{H} \tan\left(\frac{\omega T_{\text{half}}}{2}\right) \right)$$
     Applying the complementary arctangent identity $\tan^{-1}(z) = \frac{\pi}{2} - \tan^{-1}(1/z)$:
     <br/>
-    $$E_h = \frac{M N^2 \mu}{H^2 \omega + 2 H R \omega} \left[ \pi - 2 \tan^{-1}\left( \frac{H \cot(\omega T / 2)}{H + 2R} \right) \right]$$
-    This analytically proves exact equivalence to Dr. Shehab's published formula (2024).
+    $$E_h = \frac{2 M N^2 \mu}{H^2 \omega + 2 H R \omega} \left[ \pi - 2 \tan^{-1}\left( \frac{H \cot(\omega T_{\text{half}} / 2)}{H + 2R} \right) \right]$$
+    This analytically proves exact equivalence to Dr. Shehab's formulation adjusted for the symmetric pass.
     """
     story.append(Paragraph(p6_desc, body_style))
     story.append(Spacer(1, 4))
@@ -807,15 +807,15 @@ def build_pdf():
     # Harmonized Table 10
     story.append(Paragraph("<b>Part 2 & 3: Numerical Integration & Satellite Scaling ($N = 4:4:32$):</b>", h2_style))
     p6_table_data = [
-        [Paragraph("<b>N</b>", table_hdr_style), Paragraph("<b>T [s]</b>", table_hdr_style), Paragraph("<b>Closed-Form [mJ]</b>", table_hdr_style), Paragraph("<b>Trapezoid [mJ]</b>", table_hdr_style), Paragraph("<b>Simpson [mJ]</b>", table_hdr_style), Paragraph("<b>Monte-Carlo [mJ]</b>", table_hdr_style), Paragraph("<b>e<sub>Trap</sub> (%)</b>", table_hdr_style), Paragraph("<b>e<sub>Simp</sub> (%)</b>", table_hdr_style), Paragraph("<b>e<sub>MC</sub> (%)</b>", table_hdr_style)],
-        [Paragraph("4", table_cell_center), Paragraph("44.4", table_cell_center), Paragraph("0.7381", table_cell_center), Paragraph("0.7381", table_cell_center), Paragraph("0.7381", table_cell_center), Paragraph("0.7439", table_cell_center), Paragraph("5.21 &times; 10<sup>-4</sup>", table_cell_center), Paragraph("1.50 &times; 10<sup>-8</sup>", table_cell_center), Paragraph("0.78 %", table_cell_center)],
-        [Paragraph("8", table_cell_center), Paragraph("99.6", table_cell_center), Paragraph("3.7359", table_cell_center), Paragraph("3.7359", table_cell_center), Paragraph("3.7359", table_cell_center), Paragraph("3.6944", table_cell_center), Paragraph("2.91 &times; 10<sup>-4</sup>", table_cell_center), Paragraph("1.90 &times; 10<sup>-8</sup>", table_cell_center), Paragraph("1.11 %", table_cell_center)],
-        [Paragraph("12", table_cell_center), Paragraph("152.4", table_cell_center), Paragraph("8.9604", table_cell_center), Paragraph("8.9604", table_cell_center), Paragraph("8.9604", table_cell_center), Paragraph("8.8949", table_cell_center), Paragraph("1.92 &times; 10<sup>-4</sup>", table_cell_center), Paragraph("1.41 &times; 10<sup>-8</sup>", table_cell_center), Paragraph("0.73 %", table_cell_center)],
-        [Paragraph("16", table_cell_center), Paragraph("204.7", table_cell_center), Paragraph("16.4181", table_cell_center), Paragraph("16.4181", table_cell_center), Paragraph("16.4181", table_cell_center), Paragraph("16.5086", table_cell_center), Paragraph("1.42 &times; 10<sup>-4</sup>", table_cell_center), Paragraph("1.09 &times; 10<sup>-8</sup>", table_cell_center), Paragraph("0.55 %", table_cell_center)],
-        [Paragraph("20", table_cell_center), Paragraph("257.0", table_cell_center), Paragraph("26.1108", table_cell_center), Paragraph("26.1108", table_cell_center), Paragraph("26.1108", table_cell_center), Paragraph("26.3255", table_cell_center), Paragraph("1.13 &times; 10<sup>-4</sup>", table_cell_center), Paragraph("8.75 &times; 10<sup>-9</sup>", table_cell_center), Paragraph("0.82 %", table_cell_center)],
-        [Paragraph("24", table_cell_center), Paragraph("309.5", table_cell_center), Paragraph("38.0400", table_cell_center), Paragraph("38.0399", table_cell_center), Paragraph("38.0400", table_cell_center), Paragraph("37.9426", table_cell_center), Paragraph("9.32 &times; 10<sup>-5</sup>", table_cell_center), Paragraph("7.51 &times; 10<sup>-9</sup>", table_cell_center), Paragraph("0.26 %", table_cell_center)],
-        [Paragraph("28", table_cell_center), Paragraph("362.1", table_cell_center), Paragraph("52.2067", table_cell_center), Paragraph("52.2066", table_cell_center), Paragraph("52.2067", table_cell_center), Paragraph("51.6342", table_cell_center), Paragraph("7.93 &times; 10<sup>-5</sup>", table_cell_center), Paragraph("1.64 &times; 10<sup>-8</sup>", table_cell_center), Paragraph("1.10 %", table_cell_center)],
-        [Paragraph("32", table_cell_center), Paragraph("415.1", table_cell_center), Paragraph("68.6121", table_cell_center), Paragraph("68.6121", table_cell_center), Paragraph("68.6121", table_cell_center), Paragraph("66.6909", table_cell_center), Paragraph("6.89 &times; 10<sup>-5</sup>", table_cell_center), Paragraph("1.88 &times; 10<sup>-7</sup>", table_cell_center), Paragraph("2.80 %", table_cell_center)],
+        [Paragraph("<b>N</b>", table_hdr_style), Paragraph("<b>T/2 [s]</b>", table_hdr_style), Paragraph("<b>Closed-Form [mJ]</b>", table_hdr_style), Paragraph("<b>Trapezoid [mJ]</b>", table_hdr_style), Paragraph("<b>Simpson [mJ]</b>", table_hdr_style), Paragraph("<b>Monte-Carlo [mJ]</b>", table_hdr_style), Paragraph("<b>e<sub>Trap</sub> (%)</b>", table_hdr_style), Paragraph("<b>e<sub>Simp</sub> (%)</b>", table_hdr_style), Paragraph("<b>e<sub>MC</sub> (%)</b>", table_hdr_style)],
+        [Paragraph("4", table_cell_center), Paragraph("44.4", table_cell_center), Paragraph("1.4762", table_cell_center), Paragraph("1.4762", table_cell_center), Paragraph("1.4762", table_cell_center), Paragraph("1.4877", table_cell_center), Paragraph("5.21 &times; 10<sup>-4</sup>", table_cell_center), Paragraph("1.50 &times; 10<sup>-8</sup>", table_cell_center), Paragraph("0.78 %", table_cell_center)],
+        [Paragraph("8", table_cell_center), Paragraph("99.6", table_cell_center), Paragraph("7.4718", table_cell_center), Paragraph("7.4718", table_cell_center), Paragraph("7.4718", table_cell_center), Paragraph("7.3887", table_cell_center), Paragraph("2.91 &times; 10<sup>-4</sup>", table_cell_center), Paragraph("1.90 &times; 10<sup>-8</sup>", table_cell_center), Paragraph("1.11 %", table_cell_center)],
+        [Paragraph("12", table_cell_center), Paragraph("152.4", table_cell_center), Paragraph("17.9208", table_cell_center), Paragraph("17.9208", table_cell_center), Paragraph("17.9208", table_cell_center), Paragraph("17.7898", table_cell_center), Paragraph("1.92 &times; 10<sup>-4</sup>", table_cell_center), Paragraph("1.41 &times; 10<sup>-8</sup>", table_cell_center), Paragraph("0.73 %", table_cell_center)],
+        [Paragraph("16", table_cell_center), Paragraph("204.7", table_cell_center), Paragraph("32.8362", table_cell_center), Paragraph("32.8361", table_cell_center), Paragraph("32.8362", table_cell_center), Paragraph("33.0173", table_cell_center), Paragraph("1.42 &times; 10<sup>-4</sup>", table_cell_center), Paragraph("1.09 &times; 10<sup>-8</sup>", table_cell_center), Paragraph("0.55 %", table_cell_center)],
+        [Paragraph("20", table_cell_center), Paragraph("257.0", table_cell_center), Paragraph("52.2217", table_cell_center), Paragraph("52.2216", table_cell_center), Paragraph("52.2217", table_cell_center), Paragraph("52.6510", table_cell_center), Paragraph("1.13 &times; 10<sup>-4</sup>", table_cell_center), Paragraph("8.75 &times; 10<sup>-9</sup>", table_cell_center), Paragraph("0.82 %", table_cell_center)],
+        [Paragraph("24", table_cell_center), Paragraph("309.5", table_cell_center), Paragraph("76.0799", table_cell_center), Paragraph("76.0799", table_cell_center), Paragraph("76.0799", table_cell_center), Paragraph("75.8851", table_cell_center), Paragraph("9.32 &times; 10<sup>-5</sup>", table_cell_center), Paragraph("7.51 &times; 10<sup>-9</sup>", table_cell_center), Paragraph("0.26 %", table_cell_center)],
+        [Paragraph("28", table_cell_center), Paragraph("362.1", table_cell_center), Paragraph("104.4134", table_cell_center), Paragraph("104.4133", table_cell_center), Paragraph("104.4134", table_cell_center), Paragraph("103.2684", table_cell_center), Paragraph("7.93 &times; 10<sup>-5</sup>", table_cell_center), Paragraph("1.64 &times; 10<sup>-8</sup>", table_cell_center), Paragraph("1.10 %", table_cell_center)],
+        [Paragraph("32", table_cell_center), Paragraph("415.1", table_cell_center), Paragraph("137.2243", table_cell_center), Paragraph("137.2242", table_cell_center), Paragraph("137.2243", table_cell_center), Paragraph("133.3818", table_cell_center), Paragraph("6.89 &times; 10<sup>-5</sup>", table_cell_center), Paragraph("1.88 &times; 10<sup>-7</sup>", table_cell_center), Paragraph("2.80 %", table_cell_center)],
     ]
     t_p6 = Table(p6_table_data, colWidths=[20, 36, 68, 68, 68, 68, 64, 64, 60])
     t_p6.setStyle(TableStyle([
@@ -836,7 +836,7 @@ def build_pdf():
     <br/>
     3. <i>Monte-Carlo Integration:</i> Statistical errors fluctuate between $0.26\%$ and $2.80\%$ for $M = 10,000$ random samples, matching the expected $\mathcal{O}(1/\sqrt{M})$ statistical rate.
     <br/>
-    4. <i>Constellation Scaling:</i> Harvested energy scales quadratically ($N^2$) from <b>0.74 mJ</b> ($N=4$) to <b>68.61 mJ</b> ($N=32$), demonstrating the massive power gain achieved by coherent beamforming in LEO constellations.
+    4. <i>Constellation Scaling:</i> Harvested energy scales quadratically ($N^2$) from <b>1.48 mJ</b> ($N=4$) to <b>137.22 mJ</b> ($N=32$) over the complete symmetric visibility transit window.
     """
     story.append(Paragraph(p6_obs, body_style))
     story.append(Spacer(1, 4))

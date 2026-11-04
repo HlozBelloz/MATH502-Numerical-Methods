@@ -2,10 +2,20 @@
 % Problem 6: Satellite to Ground Energy Harvesting Analysis
 % Students: Mazen Altelbany (64-12371) & Yahia Talaat (64-3581)
 % German University in Cairo (GUC)
+%
+% Note on Instructor Clarifications (Update 3/11/2026):
+% 1. Received power Pr includes the factor M * N^2. Hence, M * N^2 is multiplied
+%    only once in calculating the harvested energy Eh (no double multiplication).
+% 2. The energy integral is accurately evaluated over the full symmetric visibility
+%    region [-T/2, T/2], which equals 2 * integral from 0 to T/2:
+%    Eh = 2 * integral_0^{T/2} Ph(t) dt.
 
 clear; clc; close all;
 
-fprintf('Problem 6: Satellite Energy Harvesting\n\n');
+fprintf('========================================================================\n');
+fprintf('Problem 6: Satellite to Ground Energy Harvesting Analysis\n');
+fprintf('Students: Mazen Altelbany (64-12371) & Yahia Talaat (64-3581)\n');
+fprintf('========================================================================\n\n');
 
 %% System Parameters (Table I & System Definition)
 R_earth  = 6378e3;                % Earth radius [m] (6378 km)
@@ -39,7 +49,7 @@ alpha_s = (m_rician * (2*b0 + Omega)^2) / (4*m_rician*b0^2 + 4*m_rician*b0*Omega
 beta_s  = (4*m_rician*b0^2 + 4*m_rician*b0*Omega + Omega^2) / (m_rician * (2*b0 + Omega));
 rician_factor = alpha_s * beta_s; % Exactly equal to 2*b0 + Omega = 1.606
 
-% Friis scaling constant mu
+% Friis scaling constant mu (single beam component)
 mu = eta_h * Pt * Gt * Gr * (lambda / (4 * pi))^2 * rician_factor;
 
 fprintf('System Configuration:\n');
@@ -51,26 +61,23 @@ fprintf('  Harvesting Scaling:    mu = %.4e W*m^2\n\n', mu);
 
 %% Part 1: Closed-Form Solution Derivation
 fprintf('--- PART 1: Closed-Form Solution Derivation ---\n');
-fprintf('  Total harvested energy upper bound with MRC beamforming:\n');
-fprintf('    Eh = M * N^2 * integral_0^T Ph(t) dt\n');
-fprintf('  where Ph(t) = mu / [A - B*cos(omega*t)]\n');
-fprintf('  with A = (R + H)^2 + R^2 and B = 2*R*(R + H)*cos(phi).\n\n');
+fprintf('  Received power includes M * N^2 MRT beamforming gain.\n');
+fprintf('  Accounting for symmetric visibility region around zenith (t = 0):\n');
+fprintf('    Eh = 2 * integral_0^{T_half} Ph(t) dt\n');
+fprintf('  where T_half = theta_c / omega = T / 2, and Ph(t) = M * N^2 * mu / d^2(t).\n');
 fprintf('  Applying Weierstrass Half-Angle Substitution:\n');
 fprintf('    u = tan(omega*t / 2)  =>  dt = (2/omega) * du / (1 + u^2)\n');
 fprintf('    cos(omega*t) = (1 - u^2) / (1 + u^2)\n\n');
-fprintf('  The integral simplifies to the standard arctan form:\n');
-fprintf('    integral du / [(A - B) + (A + B)*u^2]\n');
-fprintf('    = [1 / sqrt(A^2 - B^2)] * atan( sqrt((A+B)/(A-B)) * u )\n\n');
 fprintf('  For phi = 0:\n');
 fprintf('    A - B = H^2,   A + B = (H + 2*R)^2\n');
 fprintf('    sqrt(A^2 - B^2) = H * (H + 2*R)\n');
 fprintf('    sqrt((A+B)/(A-B)) = (H + 2*R) / H\n\n');
-fprintf('  Closed-Form Analytical Expression:\n');
-fprintf('    Eh = [2 * mu * M * N^2 / (omega * H * (H + 2*R))] * atan( ((H + 2*R)/H) * tan(omega*T / 2) )\n\n');
+fprintf('  Exact Closed-Form Analytical Expression (Symmetric Visibility):\n');
+fprintf('    Eh = [4 * mu * M * N^2 / (omega * H * (H + 2*R))] * atan( ((H + 2*R)/H) * tan(omega * T_half / 2) )\n\n');
 
-% Closed-form evaluation function
-closed_form_Eh = @(N_sat, T_val) (2 * mu * M * (N_sat^2) / (omega * H * (H + 2*R_earth))) * ...
-                                 atan( ((H + 2*R_earth)/H) * tan(omega * T_val / 2.0) );
+% Closed-form evaluation function (including factor of 2 for symmetric pass)
+closed_form_Eh = @(N_sat, T_half_val) 2.0 * (2.0 * mu * M * (N_sat^2) / (omega * H * (H + 2*R_earth))) * ...
+                                      atan( ((H + 2*R_earth)/H) * tan(omega * T_half_val / 2.0) );
 
 %% Part 2 & 3: Numerical Integration & Satellite Variation (N = 4 to 32)
 fprintf('--- PART 2 & 3: Numerical Evaluation & True Error vs Satellites (N = 4:4:32) ---\n\n');
@@ -92,7 +99,7 @@ K_steps = 100;         % Number of sub-intervals for Trapezoid & Simpson
 M_mc    = 10000;       % Monte-Carlo sample size
 
 fprintf('%-4s %-8s %-12s %-12s %-12s %-12s %-10s %-10s %-10s\n', ...
-        'N', 'T [s]', 'Exact [mJ]', 'Trap [mJ]', 'Simp [mJ]', 'MC [mJ]', ...
+        'N', 'T/2 [s]', 'Exact [mJ]', 'Trap [mJ]', 'Simp [mJ]', 'MC [mJ]', ...
         'e_Trap(%)', 'e_Simp(%)', 'e_MC(%)');
 fprintf('-------------------------------------------------------------------------------------------------------\n');
 
@@ -106,29 +113,29 @@ for idx = 1:num_N
     cos_tc = ((R_earth + H)^2 + R_earth^2 - dc_tot^2) / (2 * (R_earth + H) * R_earth * cos(phi));
     cos_tc = max(min(cos_tc, 1.0), -1.0); % Clamp to valid range [-1, 1]
     thetac = acos(cos_tc);
-    T_dur  = thetac / omega;
+    T_half = thetac / omega;             % Half-window duration from zenith to horizon
     
     % --- 1. Closed-Form Analytical Value ---
-    Eh_exact = closed_form_Eh(N_sat, T_dur);
+    Eh_exact = closed_form_Eh(N_sat, T_half);
     
     % --- 2. Multiple Trapezoidal Rule (Built-in trapz) ---
-    t_grid = linspace(0, T_dur, K_steps + 1);
+    t_grid = linspace(0, T_half, K_steps + 1);
     d_sq = (R_earth + H)^2 + R_earth^2 - 2 * (R_earth + H) * R_earth * cos(phi) * cos(omega * t_grid);
     integrand = 1.0 ./ d_sq;
-    coeff = M * (N_sat^2) * mu;
+    coeff = 2.0 * M * (N_sat^2) * mu;   % 2x multiplier for symmetric pass [-T/2, T/2]
     Eh_trap = coeff * trapz(t_grid, integrand);
     
     % --- 3. Simpson's 1/3 Rule ---
-    dt = T_dur / K_steps;
+    dt = T_half / K_steps;
     Eh_simp = coeff * (dt / 3.0) * (integrand(1) + ...
               4 * sum(integrand(2:2:end-1)) + ...
               2 * sum(integrand(3:2:end-2)) + ...
               integrand(end));
     
     % --- 4. Monte-Carlo Integration ---
-    t_rand = rand(1, M_mc) * T_dur;
+    t_rand = rand(1, M_mc) * T_half;
     d_sq_rand = (R_earth + H)^2 + R_earth^2 - 2 * (R_earth + H) * R_earth * cos(phi) * cos(omega * t_rand);
-    Eh_mc = coeff * T_dur * mean(1.0 ./ d_sq_rand);
+    Eh_mc = coeff * T_half * mean(1.0 ./ d_sq_rand);
     
     % Store in arrays (convert to milli-Joules [mJ])
     Eh_exact_all(idx) = Eh_exact * 1000;
@@ -142,7 +149,7 @@ for idx = 1:num_N
     err_mc_rel(idx)   = abs(Eh_mc - Eh_exact) / Eh_exact * 100;
     
     fprintf('%-4d %-8.1f %-12.4f %-12.4f %-12.4f %-12.4f %-10.4e %-10.4e %-10.2f\n', ...
-            N_sat, T_dur, Eh_exact*1000, Eh_trap*1000, Eh_simp*1000, Eh_mc*1000, ...
+            N_sat, T_half, Eh_exact*1000, Eh_trap*1000, Eh_simp*1000, Eh_mc*1000, ...
             err_trap_rel(idx), err_simp_rel(idx), err_mc_rel(idx));
 end
 
@@ -152,10 +159,10 @@ fprintf('     significantly outperforming the Trapezoidal rule due to higher 4th
 fprintf('  2. Multiple Trapezoidal Rule delivers robust accuracy (~ 10^-4 %% relative error),\n');
 fprintf('     requiring minimal computational overhead and utilizing built-in trapz.\n');
 fprintf('  3. Monte-Carlo integration exhibits statistical O(1/sqrt(M)) convergence,\n');
-fprintf('     yielding typical relative errors around ~ 0.5 - 2 %%, suitable for high-dimensional\n');
+fprintf('     yielding typical relative errors around ~ 0.2 - 2.8 %%, suitable for high-dimensional\n');
 fprintf('     stochastic validation but less efficient than quadrature for 1D smooth functions.\n');
-fprintf('  4. Harvested energy scales proportionally to N^2 * T(N), demonstrating significant\n');
-fprintf('     energy harvesting gains as the constellation grid size expands.\n\n');
+fprintf('  4. Harvested energy scales proportionally to N^2 * T(N), yielding from 1.48 mJ (N=4)\n');
+fprintf('     up to 137.22 mJ (N=32) over the full symmetric satellite transit window.\n\n');
 
 %% Plot Harvested Energy and Relative Errors
 figure('Name', 'Problem 6: Satellite Energy Harvesting', 'Position', [100, 100, 900, 400]);
@@ -190,4 +197,3 @@ legend(sprintf('Trapezoidal (K=%d)', K_steps), ...
 xticks(N_values);
 
 fprintf('Problem 6 Complete.\n');
-
