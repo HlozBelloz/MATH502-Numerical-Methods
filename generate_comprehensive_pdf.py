@@ -266,7 +266,7 @@ def build_pdf():
         [Paragraph("<b>Teaching Assistant:</b>", body_style), Paragraph("Eng. Bahaaeldin Ibrahim (<code>bahaaeldin.ibrahim@guc.edu.eg</code>)", body_style)],
         [Paragraph("<b>Programming Language:</b>", body_style), Paragraph("MATLAB (MathWorks R2026a)", body_style)],
         [Paragraph("<b>Submission Date:</b>", body_style), Paragraph("November 14, 2026 (Extended)", body_style)],
-        [Paragraph("<b>Student 1 (Author):</b>", body_style), Paragraph("<b>Mazen Altelbany</b> &nbsp;&nbsp;|&nbsp;&nbsp; <b>ID:</b> 64-12371 &nbsp;&nbsp;|&nbsp;&nbsp; <b>Tutorial:</b> T-01", body_style)],
+        [Paragraph("<b>Student 1 (Author):</b>", body_style), Paragraph("<b>Mazen Altelbany</b> &nbsp;&nbsp;|&nbsp;&nbsp; <b>ID:</b> 64-12371 &nbsp;&nbsp;|&nbsp;&nbsp; <b>Tutorial:</b> T-04", body_style)],
         [Paragraph("<b>Student 2 (Partner):</b>", body_style), Paragraph("<b>Yahia Talaat</b> &nbsp;&nbsp;|&nbsp;&nbsp; <b>ID:</b> 64-3581 &nbsp;&nbsp;|&nbsp;&nbsp; <b>Tutorial:</b> T-02", body_style)],
     ]
     meta_table = Table(meta_data, colWidths=[130, 386])
