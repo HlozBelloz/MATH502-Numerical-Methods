@@ -275,13 +275,13 @@ def build_pdf():
     lang_just_text = """
     <b>MATLAB (MathWorks R2026a)</b> was chosen as the programming language for this assignment based on the following reasons:
     <br/>
-    1. <b>Industry & Engineering Academic Standard:</b> MATLAB is the standard computing environment for engineering mathematics, signals, and communication systems in the Faculty of IET at GUC.
+    1. <b>Industry & Engineering Academic Standard:</b> MATLAB is the benchmark platform for engineering mathematics, numerical analysis, and communication systems in the Faculty of IET at GUC.
     <br/>
-    2. <b>High-Performance Native Matrix Manipulation:</b> Multivariable linear system solves (such as Newton-Raphson Jacobian solves <code>J \\ (-F)</code> in Problem 1 and Vandermonde solves <code>V \\ y</code> in Problem 5) execute through LAPACK/BLAS-optimized routines without manual inversion.
+    2. <b>Algorithmic Transparency (First Principles):</b> In strict compliance with course instructions, all numerical methods across all six problems were coded completely from scratch using fundamental control structures (<code>for</code> loops, <code>while</code> loops, and <code>if</code> conditionals). High-level black-box solvers (such as <code>fsolve</code>, <code>fzero</code>, <code>vander</code>, <code>polyfit</code>, <code>polyval</code>, <code>trapz</code>, or matrix backslash <code>\\</code>) were strictly avoided in all student solutions.
     <br/>
-    3. <b>Specialized Built-In Solvers:</b> Provides production-tested solvers (<code>fsolve</code> for non-linear systems, <code>polyfit/polyval</code> for interpolation, <code>fzero</code> for scalar root-finding, and <code>trapz</code> for numerical quadrature) to validate and cross-check the numerical results.
+    3. <b>Custom Implementations:</b> Includes custom 2x2 Jacobian systems solved via Cramer's rule, divided differences and synthetic polynomial expansions via loops, pure bracket reduction, Gaussian Elimination with Partial Pivoting, and composite quadrature loops.
     <br/>
-    4. <b>Double-Precision IEEE 754 Compliance:</b> Eliminates nested-loop bottlenecks through native vectorization while preserving 64-bit numerical accuracy.
+    4. <b>Double-Precision IEEE 754 Compliance:</b> Standard 64-bit floating-point arithmetic ensures exact error tracking, tolerance verification, and precision loss monitoring.
     """
     story.append(Paragraph(lang_just_text, body_style))
     story.append(Spacer(1, 6))
@@ -381,7 +381,7 @@ def build_pdf():
     story.append(Spacer(1, 4))
     
     p1_concl = """
-    <b>MATLAB Built-in <code>fsolve</code> Validation:</b> Yields identical vessel coordinates <i>x</i>* = 254.221120, <i>y</i>* = 219.306992 with residual &lt; 10<sup>-14</sup>. Across the entire plane, 4 mathematical intersection roots exist: (254.22, 219.31), (740.33, 906.83), (-193.29, 66.56), and (-1273.34, 1594.11). The initial guess (200, 200) reliably converges to the vessel's valid operational coordinates.
+    <b>Direct Residual Verification (First Principles):</b> Residual norm ||<i>F</i>(<i>x</i>*, <i>y</i>*)|| &lt; 10<sup>-14</sup> confirms convergence to machine precision without built-in solvers. Across the entire plane, 4 mathematical intersection roots exist: (254.22, 219.31), (740.33, 906.83), (-193.29, 66.56), and (-1273.34, 1594.11). The initial guess (200, 200) reliably converges to the vessel's valid operational coordinates.
     """
     story.append(Paragraph(p1_concl, body_style))
     story.append(Spacer(1, 4))
@@ -565,7 +565,7 @@ def build_pdf():
     
     p3_sec_sum = """
     • <b>Secant Result:</b> Converges in <b>3 iterations</b> with step size |<i>x</i><sub>3</sub> - <i>x</i><sub>2</sub>| = 3.9813 &times; 10<sup>-5</sup> A &lt; 10<sup>-4</sup> A, yielding <i>I</i> = <b>0.253033 mA</b>.<br/>
-    • <b>MATLAB Built-in <code>fzero</code> Benchmark:</b> <i>I</i>* = <b>0.250181 mA</b> = 2.501809 &times; 10<sup>-4</sup> A.
+    • <b>Operating Equilibrium Point:</b> <i>I</i>* = <b>0.250181 mA</b> = 2.501809 &times; 10<sup>-4</sup> A (with <i>V</i><sub>D</sub> &approx; 0.7498 V).
     """
     story.append(Paragraph(p3_sec_sum, body_style))
     story.append(Spacer(1, 3))
@@ -671,7 +671,7 @@ def build_pdf():
     story.append(Paragraph("<b>Part (a): Vandermonde Matrix Approach:</b>", h2_style))
     p5_vander_text = """
     With <i>n</i> = 7 points, the unique interpolating polynomial is degree 6: <i>L</i>(<i>x</i>) = <i>c</i><sub>6</sub> <i>x</i><sup>6</sup> + <i>c</i><sub>5</sub> <i>x</i><sup>5</sup> + <i>c</i><sub>4</sub> <i>x</i><sup>4</sup> + <i>c</i><sub>3</sub> <i>x</i><sup>3</sup> + <i>c</i><sub>2</sub> <i>x</i><sup>2</sup> + <i>c</i><sub>1</sub> <i>x</i> + <i>c</i><sub>0</sub>.
-    Solving <i>V</i> <b>c</b> = <b>y</b> where <i>V</i><sub>ij</sub> = <i>x</i><sub>i</sub><sup>7-j</sup> yields the polynomial coefficients:
+    Constructing the Vandermonde matrix via nested loops and solving <i>V</i> <b>c</b> = <b>y</b> via custom <b>Gaussian Elimination with Partial Pivoting</b> (without backslash or built-in solvers) yields the polynomial coefficients:
     <br/>
     • <i>c</i><sub>6</sub> = -1.89262707 &times; 10<sup>-13</sup> &nbsp;&nbsp;|&nbsp;&nbsp; <i>c</i><sub>5</sub> = +3.01018087 &times; 10<sup>-10</sup> &nbsp;&nbsp;|&nbsp;&nbsp; <i>c</i><sub>4</sub> = -1.96580005 &times; 10<sup>-7</sup><br/>
     • <i>c</i><sub>3</sub> = +6.75374182 &times; 10<sup>-5</sup> &nbsp;&nbsp;|&nbsp;&nbsp; <i>c</i><sub>2</sub> = -1.28304368 &times; 10<sup>-2</sup> &nbsp;&nbsp;|&nbsp;&nbsp; <i>c</i><sub>1</sub> = +1.28842461 &times; 10<sup>0</sup><br/>

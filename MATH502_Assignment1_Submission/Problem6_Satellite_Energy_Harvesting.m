@@ -3,12 +3,9 @@
 % Students: Mazen Altelbany (64-12371) & Yahia Talaat (64-3581)
 % German University in Cairo (GUC)
 %
-% Note on Instructor Clarifications (Update 3/11/2026):
-% 1. Received power Pr includes the factor M * N^2. Hence, M * N^2 is multiplied
-%    only once in calculating the harvested energy Eh (no double multiplication).
-% 2. The energy integral is accurately evaluated over the full symmetric visibility
-%    region [-T/2, T/2], which equals 2 * integral from 0 to T/2:
-%    Eh = 2 * integral_0^{T/2} Ph(t) dt.
+% Implemented from first principles using for loops and if conditions.
+% Composite Trapezoidal, Simpson's 1/3, and Monte-Carlo methods are implemented
+% completely from scratch without built-in integration functions (e.g., trapz, integral, mean).
 
 clear; clc; close all;
 
@@ -80,7 +77,8 @@ closed_form_Eh = @(N_sat, T_half_val) 2.0 * (2.0 * mu * M * (N_sat^2) / (omega *
                                       atan( ((H + 2*R_earth)/H) * tan(omega * T_half_val / 2.0) );
 
 %% Part 2 & 3: Numerical Integration & Satellite Variation (N = 4 to 32)
-fprintf('--- PART 2 & 3: Numerical Evaluation & True Error vs Satellites (N = 4:4:32) ---\n\n');
+fprintf('--- PART 2 & 3: Numerical Evaluation & True Error vs Satellites (N = 4:4:32) ---\n');
+fprintf('(All Quadrature Solvers Implemented From First Principles Using for-loops)\n\n');
 
 N_values = 4:4:32;
 num_N = length(N_values);
@@ -111,31 +109,53 @@ for idx = 1:num_N
     % Cutoff distance & angle for total received power
     dc_tot = (lambda / (4 * pi)) * sqrt(M * (N_sat^2) * Pt * Gt * Gr * rician_factor / Pth);
     cos_tc = ((R_earth + H)^2 + R_earth^2 - dc_tot^2) / (2 * (R_earth + H) * R_earth * cos(phi));
-    cos_tc = max(min(cos_tc, 1.0), -1.0); % Clamp to valid range [-1, 1]
+    if cos_tc > 1.0
+        cos_tc = 1.0;
+    elseif cos_tc < -1.0
+        cos_tc = -1.0;
+    end
     thetac = acos(cos_tc);
     T_half = thetac / omega;             % Half-window duration from zenith to horizon
     
     % --- 1. Closed-Form Analytical Value ---
     Eh_exact = closed_form_Eh(N_sat, T_half);
     
-    % --- 2. Multiple Trapezoidal Rule (Built-in trapz) ---
-    t_grid = linspace(0, T_half, K_steps + 1);
-    d_sq = (R_earth + H)^2 + R_earth^2 - 2 * (R_earth + H) * R_earth * cos(phi) * cos(omega * t_grid);
-    integrand = 1.0 ./ d_sq;
-    coeff = 2.0 * M * (N_sat^2) * mu;   % 2x multiplier for symmetric pass [-T/2, T/2]
-    Eh_trap = coeff * trapz(t_grid, integrand);
-    
-    % --- 3. Simpson's 1/3 Rule ---
+    % --- Grid Evaluation for Quadrature ---
     dt = T_half / K_steps;
-    Eh_simp = coeff * (dt / 3.0) * (integrand(1) + ...
-              4 * sum(integrand(2:2:end-1)) + ...
-              2 * sum(integrand(3:2:end-2)) + ...
-              integrand(end));
+    integrand = zeros(K_steps + 1, 1);
+    for k = 0:K_steps
+        t_val = k * dt;
+        d_sq = (R_earth + H)^2 + R_earth^2 - 2 * (R_earth + H) * R_earth * cos(phi) * cos(omega * t_val);
+        integrand(k + 1) = 1.0 / d_sq;
+    end
+    coeff = 2.0 * M * (N_sat^2) * mu;   % 2x multiplier for symmetric pass [-T/2, T/2]
     
-    % --- 4. Monte-Carlo Integration ---
-    t_rand = rand(1, M_mc) * T_half;
-    d_sq_rand = (R_earth + H)^2 + R_earth^2 - 2 * (R_earth + H) * R_earth * cos(phi) * cos(omega * t_rand);
-    Eh_mc = coeff * T_half * mean(1.0 ./ d_sq_rand);
+    % --- 2. Multiple Trapezoidal Rule (From Scratch via for-loop) ---
+    trap_sum = 0.5 * (integrand(1) + integrand(end));
+    for k = 2:K_steps
+        trap_sum = trap_sum + integrand(k);
+    end
+    Eh_trap = coeff * dt * trap_sum;
+    
+    % --- 3. Simpson's 1/3 Rule (From Scratch via for-loop and if-conditions) ---
+    simp_sum = integrand(1) + integrand(end);
+    for k = 2:K_steps
+        if mod(k - 1, 2) == 1
+            simp_sum = simp_sum + 4.0 * integrand(k); % Odd interior index -> weight 4
+        else
+            simp_sum = simp_sum + 2.0 * integrand(k); % Even interior index -> weight 2
+        end
+    end
+    Eh_simp = coeff * (dt / 3.0) * simp_sum;
+    
+    % --- 4. Monte-Carlo Integration (From Scratch via for-loop) ---
+    mc_sum = 0.0;
+    for m = 1:M_mc
+        t_rand_val = rand() * T_half;
+        d_sq_rand = (R_earth + H)^2 + R_earth^2 - 2 * (R_earth + H) * R_earth * cos(phi) * cos(omega * t_rand_val);
+        mc_sum = mc_sum + (1.0 / d_sq_rand);
+    end
+    Eh_mc = coeff * T_half * (mc_sum / M_mc);
     
     % Store in arrays (convert to milli-Joules [mJ])
     Eh_exact_all(idx) = Eh_exact * 1000;
@@ -157,7 +177,7 @@ fprintf('\nAccuracy & Performance Observations:\n');
 fprintf('  1. Simpson''s 1/3 Rule achieves exceptional accuracy (relative error ~ 10^-8 %),\n');
 fprintf('     significantly outperforming the Trapezoidal rule due to higher 4th-order algebraic precision.\n');
 fprintf('  2. Multiple Trapezoidal Rule delivers robust accuracy (~ 10^-4 %% relative error),\n');
-fprintf('     requiring minimal computational overhead and utilizing built-in trapz.\n');
+fprintf('     implemented via a single accumulation loop.\n');
 fprintf('  3. Monte-Carlo integration exhibits statistical O(1/sqrt(M)) convergence,\n');
 fprintf('     yielding typical relative errors around ~ 0.2 - 2.8 %%, suitable for high-dimensional\n');
 fprintf('     stochastic validation but less efficient than quadrature for 1D smooth functions.\n');

@@ -2,10 +2,16 @@
 % Problem 3: Diode DC Circuit Non-Linear Analysis (Bisection & Secant)
 % Students: Mazen Altelbany (64-12371) & Yahia Talaat (64-3581)
 % German University in Cairo (GUC)
+%
+% Implemented from first principles using while loops and if conditions.
+% No built-in root-finding solvers (e.g., fzero) used.
 
 clear; clc; close all;
 
-fprintf('Problem 3: Diode Circuit Root-Finding (Bisection and Secant)\n\n');
+fprintf('========================================================================\n');
+fprintf('Problem 3: Diode Circuit Root-Finding (Bisection and Secant)\n');
+fprintf('Students: Mazen Altelbany (64-12371) & Yahia Talaat (64-3581)\n');
+fprintf('========================================================================\n\n');
 
 %% System Parameters
 Is = 1.0e-12;           % Reverse saturation current [A]
@@ -15,21 +21,26 @@ R  = 1.0e3;             % Circuit resistance [Ohm]
 Vs = 1.0;               % DC supply voltage [V]
 tol = 1.0e-4;           % Accuracy tolerance [A] (0.1 mA)
 
-%% Part (a): Define the function f(I)
+%% Part (a): Define the non-linear function f(I)
 % From KVL: Vs = I*R + VD
 % Shockley equation: I = Is*(exp(VD / (n*VT)) - 1) => VD = n*VT*ln(I/Is + 1)
 % Non-linear function: f(I) = I*R + n*VT*ln(I/Is + 1) - Vs = 0
-f = @(I) I .* R + n * VT .* log(I ./ Is + 1.0) - Vs;
+f = @(I) I * R + n * VT * log(I / Is + 1.0) - Vs;
 
 fprintf('--- PART (a): Function f(I) Defined ---\n');
 fprintf('  f(I) = I*R + n*VT*ln(I/Is + 1) - Vs = 0\n');
 fprintf('  At lower bound I = 0 A:     f(0) = %.4f V\n', f(0));
-fprintf('  At upper bound I = 5 mA:    f(5e-3) = %.4f V\n\n', f(5e-3));
+fprintf('  At upper bound I = 5 mA:    f(5e-3) = %.4f V\n', f(5e-3));
+if f(0) * f(5e-3) < 0
+    fprintf('  Sign change confirmed: f(0)*f(5 mA) < 0 => Root exists on [0, 5 mA].\n\n');
+end
 
 %% Part (b) & (c): Root Finding using Bisection and Secant Methods
 fprintf('--- PART (b) & (c): Root Finding Implementations ---\n');
 
-% 1. BISECTION METHOD
+% -------------------------------------------------------------------------
+% 1. BISECTION METHOD (Pure while loop & if conditions)
+% -------------------------------------------------------------------------
 fprintf('[1. Bisection Method Execution]:\n');
 a = 0.0;
 b = 5.0e-3;
@@ -40,7 +51,7 @@ fprintf('%-5s %-14s %-14s %-14s %-14s %-14s\n', ...
         'Iter', 'a [mA]', 'b [mA]', 'c [mA]', '(b-a)/2 [A]', 'f(c) [V]');
 fprintf('----------------------------------------------------------------------------------\n');
 
-while (b - a)/2.0 > tol && iter_bis < max_iter
+while ((b - a) / 2.0 > tol) && (iter_bis < max_iter)
     iter_bis = iter_bis + 1;
     c = (a + b) / 2.0;
     fc = f(c);
@@ -49,23 +60,27 @@ while (b - a)/2.0 > tol && iter_bis < max_iter
     fprintf('%-5d %-14.4f %-14.4f %-14.4f %-14.4e %-14.4e\n', ...
             iter_bis, a*1e3, b*1e3, c*1e3, err_bound, fc);
     
+    % Interval update via if condition
     if f(a) * fc < 0
         b = c;
     else
         a = c;
     end
 end
+
 root_bis = (a + b) / 2.0;
 fprintf('\nBisection Method Summary:\n');
 fprintf('  Number of iterations needed: %d\n', iter_bis);
 fprintf('  Final root estimate:         I = %.6e A (%.4f mA)\n', root_bis, root_bis*1e3);
 fprintf('  Bracket after iter %d:        [%.4f, %.4f] mA\n', iter_bis, a*1e3, b*1e3);
-fprintf('  Maximum error bound:         (b - a)/2 = %.4e A (< 1e-4 A)\n', (b-a)/2);
+fprintf('  Maximum error bound:         (b - a)/2 = %.4e A (< 1e-4 A)\n', (b - a) / 2.0);
 fprintf('  Note on 6th iteration:       If taken, bracket becomes [%.4f, %.4f] mA,\n', 0.234375, 0.3125);
 fprintf('                               with midpoint I = %.4f mA and bound %.4e A.\n', (0.234375 + 0.3125)/2, (0.3125 - 0.234375)/2);
 fprintf('  Function value at root:      f(I) = %.4e V\n\n', f(root_bis));
 
-% 2. SECANT METHOD
+% -------------------------------------------------------------------------
+% 2. SECANT METHOD (Pure while loop & if conditions)
+% -------------------------------------------------------------------------
 fprintf('[2. Secant Method Execution]:\n');
 x0 = 0.0;
 x1 = 5.0e-3;
@@ -80,8 +95,12 @@ while iter_sec < max_iter
     f0 = f(x0);
     f1 = f(x1);
     
-    % Secant update formula
-    x2 = x1 - f1 * (x1 - x0) / (f1 - f0);
+    % Secant formula
+    denom = f1 - f0;
+    if abs(denom) < 1e-15
+        error('Secant method encountered zero denominator.');
+    end
+    x2 = x1 - f1 * (x1 - x0) / denom;
     diff_step = abs(x2 - x1);
     
     fprintf('%-5d %-14.4f %-14.4f %-14.4e %-14.4e\n', ...
@@ -93,26 +112,24 @@ while iter_sec < max_iter
     x0 = x1;
     x1 = x2;
 end
+
 root_sec = x2;
 fprintf('\nSecant Method Summary:\n');
 fprintf('  Number of iterations needed: %d\n', iter_sec);
 fprintf('  Final root estimate:         I = %.6e A (%.4f mA)\n', root_sec, root_sec*1e3);
 fprintf('  Function value at root:      f(I) = %.4e V\n\n', f(root_sec));
 
-% Verification with MATLAB built-in fzero
-root_fzero = fzero(f, [0, 5e-3]);
-fprintf('[MATLAB Built-in fzero Verification]:\n');
-fprintf('  fzero Root: I = %.8e A (%.6f mA)\n', root_fzero, root_fzero*1e3);
-fprintf('  f(root_fzero) = %.4e V\n\n', f(root_fzero));
-
 %% Part (d): Plot f(I) over the interval [0, 5 mA]
 figure('Name', 'Problem 3: Diode DC Circuit Root-Finding', 'Position', [150, 150, 700, 450]);
 I_plot = linspace(0, 5e-3, 500);
-f_plot = f(I_plot);
+f_plot = zeros(size(I_plot));
+for idx = 1:length(I_plot)
+    f_plot(idx) = f(I_plot(idx));
+end
 
 plot(I_plot * 1e3, f_plot, 'b-', 'LineWidth', 2.0); hold on;
-yline(0, 'k--', 'LineWidth', 1.2);
-plot(root_fzero * 1e3, 0, 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r');
+plot([0, 5], [0, 0], 'k--', 'LineWidth', 1.2);
+plot(root_sec * 1e3, 0, 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r');
 plot([a, b]*1e3, [f(a), f(b)], 'ks', 'MarkerSize', 6, 'MarkerFaceColor', 'y');
 
 grid on;
@@ -120,8 +137,7 @@ xlabel('Current I [mA]', 'FontWeight', 'bold');
 ylabel('Non-Linear Function f(I) [V]', 'FontWeight', 'bold');
 title('Diode DC Circuit Root-Finding: f(I) vs. Current I', 'FontWeight', 'bold');
 legend('f(I) = I\cdot R + n V_T ln(I/I_s + 1) - V_s', 'f(I) = 0 Axis', ...
-       sprintf('Operating Root I* = %.4f mA', root_fzero*1e3), ...
+       sprintf('Operating Root I* = %.4f mA', root_sec*1e3), ...
        'Final Bisection Bracket [a, b]', 'Location', 'northwest');
 
 fprintf('Problem 3 Complete.\n');
-

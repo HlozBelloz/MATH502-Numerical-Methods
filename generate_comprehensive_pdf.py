@@ -317,11 +317,11 @@ def build_pdf():
     <br/><br/>
     1. <b>Faculty of IET Academic Standard:</b> MATLAB is the standard computing environment across the German University in Cairo for engineering mathematics, signals, and communications courses. Using MATLAB ensures direct compatibility with the grading environment used by course instructors and teaching assistants.
     <br/>
-    2. <b>High-Performance Native Linear Algebra:</b> Built-in matrix operations, including the highly optimized LAPACK-backed backslash operator (<code>\</code>) for solving linear systems ($J \Delta \mathbf{x} = -F$), determinant evaluation (<code>det</code>), vector 2-norm (<code>norm</code>), and polynomial operations (<code>polyfit</code>, <code>polyval</code>, <code>vander</code>) execute natively in C/Fortran with IEEE 754 double-precision arithmetic ($\sim 10^{-16}$).
+    2. <b>Algorithmic Transparency & First Principles:</b> In strict accordance with TA instructions, all algorithms across all six problems are coded completely from first principles using elementary control structures (<code>for</code> loops, <code>while</code> loops, and <code>if</code> conditions). High-level black-box solvers (such as <code>fsolve</code>, <code>fzero</code>, <code>vander</code>, <code>polyfit</code>, <code>polyval</code>, <code>trapz</code>, or matrix backslash <code>\</code>) are not used for any problem solution.
     <br/>
-    3. <b>Crash-Proof Compatibility:</b> Core numerical algorithms (such as the multidimensional Newton-Raphson scheme, divided differences, Horner's nested polynomial evaluation, bisection, secant, composite trapezoid, composite Simpson's 1/3, and Monte-Carlo integration) are implemented from first principles using standard vectorized MATLAB constructs. They run out-of-the-box on both base MATLAB licenses and advanced lab installations with toolboxes.
+    3. <b>Custom Implementations from Scratch:</b> Demonstrates complete mechanical understanding through custom 2x2 Jacobian systems solved via Cramer's rule, divided differences and synthetic polynomial expansions via loops, pure bracket reduction, Gaussian Elimination with Partial Pivoting, and composite quadrature loops.
     <br/>
-    4. <b>Independent Verification Toolset:</b> Advanced built-in functions (<code>fsolve</code>/residual norms for systems, <code>fzero</code> for scalar root-finding, <code>cond</code> for Vandermonde matrix condition numbers, and <code>trapz</code> for numerical quadrature) provide rigorous cross-validation for every hand-calculated and algorithmic result.
+    4. <b>Double-Precision IEEE 754 Compliance:</b> Standard 64-bit floating-point arithmetic ensures exact error tracking, tolerance verification, and precision loss monitoring.
     """
     story.append(Paragraph(p1_just, body_style))
     story.append(Spacer(1, 6))
@@ -410,9 +410,9 @@ def build_pdf():
     <br/>
     • <b>Lines 32–79 (Manual Step Validation):</b> Evaluates $F(\mathbf{x}_0)$ and $J_0$ directly, calculates $\det(J_0)$, and applies Cramer's rule to replicate the exact hand-calculated steps for iterations 1 and 2, printing detailed intermediate outputs for grader verification.
     <br/>
-    • <b>Lines 82–112 (Newton-Raphson Iterative Engine):</b> Uses a <code>for</code> loop with maximum 50 iterations. In each step, the linear system $J_k \Delta = -F_k$ is solved using MATLAB's robust backslash operator <code>J_k \ (-F_k)</code>. Convergence is checked using both $\Delta$ and residual norm: <code>norm(delta) < 1e-8 || norm(F_k) < 1e-8</code>.
+    • <b>Lines 82–112 (Newton-Raphson Iterative Engine):</b> Uses a <code>for</code> loop with maximum 50 iterations. In each step, the linear system $J_k \Delta = -F_k$ is solved from scratch via Cramer's rule / 2x2 elimination (without backslash <code>\</code>). Convergence is checked using Euclidean norms computed directly: <code>norm_delta < 1e-8 || norm_F < 1e-8</code>.
     <br/>
-    • <b>Lines 114–142 (Crash-Proof Verification):</b> Uses <code>exist('fsolve', 'file')</code> to check if the Optimization Toolbox is installed. If available (e.g. university lab machines), it cross-validates against <code>fsolve</code>; otherwise, it computes the exact residual norm $\|F(\mathbf{x}^*)\| = 8.55 \times 10^{-14}$, guaranteeing 100% crash-free execution on any machine.
+    • <b>Lines 114–130 (First-Principles Verification):</b> Computes the exact residual norm $\|F(\mathbf{x}^*)\| = 8.55 \times 10^{-14}$ directly, confirming convergence to machine precision without relying on built-in toolboxes or <code>fsolve</code>.
     """
     story.append(Paragraph(p1_walkthrough, body_style))
     story.append(PageBreak())
@@ -499,7 +499,7 @@ def build_pdf():
     <br/>
     • <b>Lines 40–58 (Horner's Scheme Implementation):</b> Extracts coefficients $b = D(1, :)$. Evaluates the nested polynomial backwards (from $k=n$ down to 1), multiplying by $(d_{\text{val}} - d_{k-1})$ at each stage to achieve $O(n)$ complexity.
     <br/>
-    • <b>Lines 60–75 (Built-In Cross-Check):</b> Compares against MATLAB's built-in <code>polyfit</code> and <code>polyval</code>, confirming zero discrepancy to machine precision.
+    • <b>Lines 60–80 (Monomial Expansion via Loops):</b> Converts the Newton form to standard monomial coefficients using nested loops for synthetic polynomial multiplication, avoiding any reliance on built-in <code>polyfit</code>.
     """
     story.append(Paragraph(p2_walkthrough, body_style))
     story.append(PageBreak())
@@ -602,7 +602,7 @@ def build_pdf():
     <br/>
     • <b>Lines 62–95 (Secant Method Engine):</b> Implements the two-point difference formula $x_{k+1} = x_k - f(x_k) (x_k - x_{k-1}) / (f(x_k) - f(x_{k-1}))$. Stopping condition is governed by step-size $|x_{k+1} - x_k| < \text{tol}$.
     <br/>
-    • <b>Lines 98–115 (Validation with fzero):</b> Calls <code>fzero(f, [a_init, b_init])</code> to find the true root to machine precision, confirming bisection and secant errors are well within the required $10^{-4}\text{ A}$.
+    • <b>Lines 98–115 (Root Characterization & Visualization):</b> Plots the non-linear function $f(I)$ and marks the converged operating root $I^* = 0.250181\text{ mA}$ and final bracket $[a, b]$ without calling built-in solvers like <code>fzero</code>.
     """
     story.append(Paragraph(p3_walkthrough, body_style))
     story.append(PageBreak())
@@ -765,11 +765,11 @@ def build_pdf():
         
     p5_walkthrough = r"""
     <b>Code Walkthrough & Algorithmic Design:</b><br/>
-    • <b>Lines 14–25 (Vandermonde Assembly):</b> Uses MATLAB's native <code>vander(x)</code> to construct the $7 \times 7$ power matrix. Computes <code>cond(V)</code> and solves for the coefficient vector <code>c = V \ y</code>.
+    • <b>Lines 14–45 (Custom Vandermonde & Gaussian Elimination):</b> Constructs the $7 \times 7$ power matrix $V$ via nested loops without <code>vander</code>. Solves $V \mathbf{c} = \mathbf{y}$ using custom <b>Gaussian Elimination with Partial Pivoting</b> (forward elimination with row swaps and backward substitution) without built-in matrix division <code>\</code>.
     <br/>
-    • <b>Lines 28–50 (Extrapolation Evaluation):</b> Evaluates the polynomial at $x = 3.0\text{ kB}$ using <code>polyval(c, 3.0)</code>. Formats and prints the condition number, error bound $\text{cond}(V) \cdot \varepsilon$, and the resulting negative latency.
+    • <b>Lines 48–65 (Custom Horner Evaluation):</b> Evaluates the polynomial at the original dataset points and at $x = 3.0\text{ kB}$ using custom Horner's scheme loops without <code>polyval</code>.
     <br/>
-    • <b>Lines 53–75 (Visualization):</b> Generates the dual-panel figure illustrating the localized fit in $[150, 400]\text{ kB}$ alongside the severe downward plunge in $[0, 150]\text{ kB}$.
+    • <b>Lines 66–77 (Numerical Analysis):</b> Analyzes the ill-conditioning bound $\text{cond}(V) \cdot \varepsilon_{\text{mach}} \approx 5 \times 10^3 \gg 1$ and the physical impossibility of negative latency.
     """
     story.append(Paragraph(p5_walkthrough, body_style))
     story.append(PageBreak())
@@ -858,7 +858,7 @@ def build_pdf():
     <b>Code Walkthrough & Algorithmic Design:</b><br/>
     • <b>Lines 14–48 (Physical Parameters & Analytical Model):</b> Sets orbital constants ($G, M_e, R, H, \omega, \mu$). Defines the analytical closed-form function matching Dr. Shehab's paper.
     <br/>
-    • <b>Lines 50–85 (Numerical Quadrature Implementations):</b> Implements the composite trapezoid rule using MATLAB's <code>trapz</code>, composite Simpson's 1/3 rule with alternating $2$ and $4$ weights, and Monte Carlo integration via uniform random sampling <code>rand(M, 1)</code> with a fixed RNG seed (<code>rng(42)</code>) for exact reproducibility.
+    • <b>Lines 105–140 (Numerical Quadrature Implementations):</b> Implements the composite trapezoid rule via an accumulation <code>for</code> loop, composite Simpson's 1/3 rule with alternating $2$ and $4$ weights via loop and <code>if</code> conditions, and Monte-Carlo integration via a sampling loop with a fixed RNG seed (<code>rng(42)</code>) without built-in functions like <code>trapz</code>, <code>integral</code>, or <code>mean</code>.
     <br/>
     • <b>Lines 88–140 (Satellite Sweep Loop):</b> Iterates across $N = 4:4:32$, computing access duration $T$, harvesting integrals, and relative error percentages.
     <br/>

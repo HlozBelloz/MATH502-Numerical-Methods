@@ -2,10 +2,16 @@
 % Problem 4: Diode DC Circuit Analysis using Newton-Raphson Method
 % Students: Mazen Altelbany (64-12371) & Yahia Talaat (64-3581)
 % German University in Cairo (GUC)
+%
+% Implemented from first principles using while loops and if conditions.
+% No built-in numerical root-finders used.
 
 clear; clc; close all;
 
-fprintf('Problem 4: Diode Circuit Root-Finding (Newton-Raphson)\n\n');
+fprintf('========================================================================\n');
+fprintf('Problem 4: Diode Circuit Root-Finding (Newton-Raphson Method)\n');
+fprintf('Students: Mazen Altelbany (64-12371) & Yahia Talaat (64-3581)\n');
+fprintf('========================================================================\n\n');
 
 %% Circuit Parameters
 Is = 1.0e-12;           % Reverse saturation current [A]
@@ -16,10 +22,10 @@ Vs = 1.0;               % Supply voltage [V]
 tol = 1.0e-4;           % Accuracy tolerance [A] (0.1 mA)
 
 %% Function and Analytical Derivative
-% f(I)  = I*R + n*VT*ln(I/Is + 1) - Vs
-% df(I) = R + (n*VT)/(I + Is)
-f  = @(I) I .* R + n * VT .* log(I ./ Is + 1.0) - Vs;
-df = @(I) R + (n * VT) ./ (I + Is);
+% Non-linear KVL equation: f(I)  = I*R + n*VT*ln(I/Is + 1) - Vs
+% Analytical derivative:   df(I) = R + (n*VT)/(I + Is)
+f  = @(I) I * R + n * VT * log(I / Is + 1.0) - Vs;
+df = @(I) R + (n * VT) / (I + Is);
 
 initial_guesses = [0.35e-3, 1.0e-3];
 labels = {'(a) I0 = 0.35 mA', '(b) I0 = 1.00 mA'};
@@ -42,6 +48,10 @@ for case_idx = 1:2
         f_val  = f(I_k);
         df_val = df(I_k);
         
+        if abs(df_val) < 1e-15
+            error('Newton-Raphson derivative near zero.');
+        end
+        
         delta = -f_val / df_val;
         I_next = I_k + delta;
         
@@ -60,7 +70,7 @@ for case_idx = 1:2
     fprintf('  Function value at root:      f(I) = %.4e V\n\n', f(I_next));
 end
 
-%% Comparison & Discussion
+%% Comparison & Theoretical Discussion
 fprintf('=================================================================\n');
 fprintf('  Summary of Root-Finding Methods for Diode Circuit (Tol = 1e-4) \n');
 fprintf('=================================================================\n');
@@ -81,4 +91,3 @@ fprintf('    horizontal tangent singularities throughout the physical domain I >
 fprintf('  - Both initial guesses converge within 2 iterations for tolerance 10^-4 A.\n\n');
 
 fprintf('Problem 4 Complete.\n');
-
